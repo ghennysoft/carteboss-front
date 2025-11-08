@@ -84,11 +84,11 @@ const Register = () => {
 
     return (
         <div className="w-screen px-3">
-            <div className="border bg-white my-5 mx-auto sm:w-[25rem]">
+            <div className="shadow-xl bg-white my-5 mx-auto sm:w-[25rem]">
                 <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
                     <div className="w-full sm:mx-auto sm:w-full sm:max-w-sm">
-                        <img src="/logo.png" width={100} alt="logo ghenny" className="mx-auto" />
-                        <h3 className="mt-3 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Inscrivez-vous</h3>
+            <img src="/logo.png" width={200} alt="logo ghenny" className="mx-auto" />
+                        {/* <h3 className="mt-3 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Inscrivez-vous</h3> */}
                     </div>
                     <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -97,13 +97,13 @@ const Register = () => {
                             </div>}
                             
                             <div>
-                                <label htmlFor="firstname" className="block text-sm/6 font-medium text-gray-900">Prénom</label>
-                                <div className="mt-2">
+                                <div className="relative mt-2 block mb-5 bg-gray-300 py-3 px-4 rounded-full focus:outline-0">
                                     <input 
                                         id="firstname" 
                                         type="text" 
                                         {...register("firstname")}
-                                        className="block border w-full rounded-md bg-white px-2 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-[#30D5C8] sm:text-sm/6" 
+                                        placeholder="Prénom"
+                                        className="block w-full focus:outline-0 bg-transparent" 
                                         autoFocus
                                     />
                                     {errors.firstname && (
@@ -113,13 +113,13 @@ const Register = () => {
                             </div>
 
                             <div>
-                                <label htmlFor="lastname" className="block text-sm/6 font-medium text-gray-900">Nom</label>
-                                <div className="mt-2">
+                                <div className="relative mt-2 block mb-5 bg-gray-300 py-3 px-4 rounded-full focus:outline-0">
                                     <input 
                                         id="lastname" 
                                         type="text" 
+                                        placeholder="Nom"
                                         {...register("lastname")}
-                                        className="block border w-full rounded-md bg-white px-2 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-[#30D5C8] sm:text-sm/6" 
+                                        className="block w-full focus:outline-0 bg-transparent" 
                                     />
                                     {errors.lastname && (
                                         <small className="text-red-500 text-xs mt-1">{errors.lastname.message}</small>
@@ -128,13 +128,13 @@ const Register = () => {
                             </div>
 
                             <div>
-                                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">Email</label>
-                                <div className="mt-2">
+                                <div className="relative mt-2 block mb-5 bg-gray-300 py-3 px-4 rounded-full focus:outline-0">
                                     <input 
                                         id="email" 
                                         type="email" 
+                                        placeholder="Adresse email"
                                         {...register("email")}
-                                        className="block border w-full rounded-md bg-white px-2 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-[#30D5C8] sm:text-sm/6" 
+                                        className="block w-full focus:outline-0 bg-transparent" 
                                     />
                                     {errors.email && (
                                         <small className="text-red-500 text-xs mt-1">{errors.email.message}</small>
@@ -143,50 +143,36 @@ const Register = () => {
                             </div>
 
                             <div>
-                                <div className="flex items-center justify-between">
-                                    <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">Mot de passe</label>
-                                </div>
-                                <div className="relative mt-2">
+                                <div className="relative mt-2 block mb-5 bg-gray-300 py-3 px-4 rounded-full focus:outline-0">
                                     <input 
                                         id="password" 
                                         type={showPassword ? "text" : "password"} 
+                                        placeholder="Mot de passe"
                                         {...register("password")}
-                                        className="block border w-full rounded-md bg-white px-2 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-[#30D5C8] sm:text-sm/6" 
+                                        className="block w-full focus:outline-0 bg-transparent" 
                                     />
                                     {showPassword
-                                        ? <FaRegEye onClick={()=>setShowPassword(!showPassword)} className="absolute bg-white top-3 right-2 cursor-pointer"  />
-                                        : <FaRegEyeSlash onClick={()=>setShowPassword(!showPassword)} className="absolute bg-white top-3 right-2 cursor-pointer"  />
+                                        ? <FaRegEye onClick={()=>setShowPassword(!showPassword)} className="absolute top-4 right-3 cursor-pointer"  />
+                                        : <FaRegEyeSlash onClick={()=>setShowPassword(!showPassword)} className="absolute top-4 right-3 cursor-pointer"  />
                                     }
                                 </div>
                                 {errors.password && (
                                     <small className="text-red-500 text-xs mt-1">{errors.password.message}</small>
                                 )}
-                                {/* Aide visuelle pour les règles du mot de passe */}
-                                {passwordValue && (
-                                    <div className="mt-1 text-xs text-gray-600">
-                                        <div>Le mot de passe doit contenir :</div>
-                                        <div>• Au moins 6 caractères</div>
-                                        <div>• Une lettre majuscule</div>
-                                        <div>• Une lettre minuscule</div>
-                                        <div>• Un chiffre</div>
-                                    </div>
-                                )}
                             </div>
 
                             <div>
-                                <div className="flex items-center justify-between">
-                                    <label htmlFor="confirmPassword" className="block text-sm/6 font-medium text-gray-900">Confirmation mot de passe</label>
-                                </div>
-                                <div className="relative mt-2">
+                                <div className="relative mt-2 block mb-5 bg-gray-300 py-3 px-4 rounded-full focus:outline-0">
                                     <input 
                                         id="confirmPassword" 
+                                        placeholder="Confirmation mot de passe"
                                         type={showConfirmPassword ? "text" : "password"} 
                                         {...register("confirmPassword")}
-                                        className="block border w-full rounded-md bg-white px-2 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-[#30D5C8] sm:text-sm/6" 
+                                        className="block w-full focus:outline-0 bg-transparent" 
                                     />
                                     {showConfirmPassword
-                                        ? <FaRegEye onClick={()=>setShowConfirmPassword(!showConfirmPassword)} className="absolute bg-white top-3 right-2 cursor-pointer"  />
-                                        : <FaRegEyeSlash onClick={()=>setShowConfirmPassword(!showConfirmPassword)} className="absolute bg-white top-3 right-2 cursor-pointer"  />
+                                        ? <FaRegEye onClick={()=>setShowConfirmPassword(!showConfirmPassword)} className="absolute top-4 right-3 cursor-pointer"  />
+                                        : <FaRegEyeSlash onClick={()=>setShowConfirmPassword(!showConfirmPassword)} className="absolute top-4 right-3 cursor-pointer"  />
                                     }
                                 </div>
                                 {errors.confirmPassword && (
@@ -197,20 +183,21 @@ const Register = () => {
                             <div>
                                 {
                                     loading
-                                    ? <button disabled className="button-disabled flex w-full justify-center p-1" style={{border: '1px solid #ddd'}}>
+                                    ? <button disabled className="button-disabled flex w-full justify-center py-3 px-4 rounded-full focus:outline-0 cursor-pointer" style={{border: '1px solid #ddd'}}>
                                         Chargement...
-                                    </button>
-                                    : <button type="submit" className="flex w-full text-gray-700 justify-center rounded-md bg-[#30D5C8] px-3 py-1.5 text-sm/6 font-semibold shadow-xs hover:bg-[#30D5C8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#30D5C8] mb-2">
-                                        S'inscrire
-                                    </button>
+                                        </button>
+                                    : <button type="submit" className="flex w-full justify-center border border-[#141425] bg-[#141425] text-white py-3 px-4 rounded-full focus:outline-0 cursor-pointer">
+                                        Créer un compte
+                                        </button>
                                 }
                             </div>
+                            <hr className="border-gray-400 my-5" />
+                            <div>
+                                <Link to={"/"} className="flex w-full justify-center border border-[#141425] bg-white text-[#141425] py-3 px-4 rounded-full focus:outline-0">
+                                    Connexion
+                                </Link>
+                            </div>
                         </form>
-                        
-                        <p className="text-center text-sm/6 text-gray-500">
-                            Déjà un compte ?
-                            <Link to={"/"} className="font-semibold text-[#1aaa9e] hover:text-[#1aaa9e]"> Se connecter</Link>
-                        </p>
                     </div>
                 </div>
             </div>

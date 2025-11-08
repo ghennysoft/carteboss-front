@@ -1,10 +1,21 @@
-import { data } from '../../utils/data'
 import { Link, useParams } from 'react-router-dom'
 import { Mail, Map, Phone, Smartphone, User } from 'lucide-react'
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { BASE_API_URL } from '../../utils/constante';
 
 const Detail = () => {
     const {id} = useParams();
-    const item = data.find(d=>d.id===id)
+    const [item, setItem] = useState();
+    useEffect(()=>{
+        const getPost = async ()=>{
+            const response = await axios.get(BASE_API_URL+"/api/post/"+id)
+            setItem(response.data);
+            return response.data;
+        }
+        getPost();
+    }, [id])
+    console.log(item);
 
     const detectPlatform = () => {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -63,15 +74,15 @@ const Detail = () => {
     };
 
   return (
-    <div className="container">
+    <div className="container p-5 lg:max-w-3/5 mx-auto">
         <div>
-            <img src={item?.cover} style={{objectFit: 'cover', width: '100%', height: '100px'}} alt="" />
-            <img src={item?.profile} style={{ width: '120px', height: '120px', objectFit: 'cover', border: '2px solid #fff', borderRadius: '50%', margin: '-40px 10px 0px'}} alt="" />
+            <img src={item?.coverPicture?.url ? item?.coverPicture?.url : "/no-banner.png"} style={{objectFit: 'cover', width: '100%', height: '230px'}} alt="" />
+            <img src={item?.profilePicture?.url ? item?.profilePicture?.url : "/no-img.jpg"} style={{ width: '150px', height: '150px', objectFit: 'cover', border: '10px solid #fff', borderRadius: '50%', margin: '-80px 30px 0px'}} alt="" />
             <div className="content">
                 <div className="infos ml-4 mt-3">
                     <div className='flex items-center gap-3 mb-2'><User width={20} /><b>{item?.name}</b></div>
                     <div className='flex items-center gap-3 mb-2'><Mail width={18} />{item?.email}</div>
-                    <div className='flex items-center gap-3 mb-2'><Phone width={18} />{item?.phone}</div>
+                    <div className='flex items-center gap-3 mb-2'><Phone width={18} />{item?.phoneNumber}</div>
                     <div className='flex items-center gap-3 mb-2'><Map width={18} />{item?.address}</div>
                 </div>
                 <button onClick={launchContactApp} style={{display: 'inline-block',backgroundColor: '#000', color: '#fff', padding: '15px 25px', margin: '10px', borderRadius: '30px', cursor: 'pointer'}}>Enregistrer le contact</button>
