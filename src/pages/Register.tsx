@@ -186,14 +186,14 @@ const Register = () => {
                                     ? <button disabled className="button-disabled flex w-full justify-center py-3 px-4 rounded-full focus:outline-0 cursor-pointer" style={{border: '1px solid #ddd'}}>
                                         Chargement...
                                         </button>
-                                    : <button type="submit" className="flex w-full justify-center border border-[#141425] bg-[#141425] text-white py-3 px-4 rounded-full focus:outline-0 cursor-pointer">
+                                    : <button type="submit" className="flex w-full justify-center border border-[#26265eff] bg-[#26265eff] text-white py-3 px-4 rounded-full focus:outline-0 cursor-pointer">
                                         Créer un compte
                                         </button>
                                 }
                             </div>
                             <hr className="border-gray-400 my-5" />
                             <div>
-                                <Link to={"/"} className="flex w-full justify-center border border-[#141425] bg-white text-[#141425] py-3 px-4 rounded-full focus:outline-0">
+                                <Link to={"/"} className="flex w-full justify-center border border-[#26265eff] bg-white text-[#26265eff] py-3 px-4 rounded-full focus:outline-0">
                                     Connexion
                                 </Link>
                             </div>
