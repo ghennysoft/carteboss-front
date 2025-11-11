@@ -4,7 +4,7 @@ import { BASE_API_URL } from '../../utils/constante';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import NavBar from '../NavBar';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Trash2 } from 'lucide-react';
 
 const EditForm = () => {
     const {id} = useParams();
@@ -112,6 +112,17 @@ const EditForm = () => {
         }   
     }
 
+    const handleDelete = async () => {
+        try {
+            const response = await axios.put(BASE_API_URL+"/api/post/delete/"+id)
+            console.log(response?.data);
+            navigate('/dashboard')
+        } catch (err) {
+            console.log(err);
+            setLoading(false)
+        }   
+    }
+
     return (
         <>
             {
@@ -119,14 +130,17 @@ const EditForm = () => {
                 ? <p>Chargement...</p>
                 : (<div className="container p-5 lg:max-w-3/5 mx-auto">
                     <NavBar />
-                    <div className="flex items-center mb-3">
-                        <ChevronLeft
-                            className="h-7 w-7 p-1 cursor-pointer" 
-                            onClick={()=>navigate(-1)}
-                        />
-                        <h2 className='font-medium text-xl'>Modifier la carte</h2>
+                    <div className="flex justify-between items-center mb-3">
+                        <div className="flex items-center mb-3">
+                            <ChevronLeft
+                                className="h-7 w-7 p-1 cursor-pointer" 
+                                onClick={()=>navigate(-1)}
+                            />
+                            <h2 className='font-medium text-xl'>Modifier la carte</h2>
+                        </div>
+                        <button onClick={handleDelete} className='flex items-center bg-red-800 text-white rounded-lg p-3 cursor-pointer'> <Trash2 size={15} /> <small>Supprimer la carte</small></button>
                     </div>
-                    <form onSubmit={handleSubmit} >
+                    {/* <form  > */}
                         {/* Images */}
                         <div className="relative">
                             <img src={cover?URL.createObjectURL(cover):"/no-banner.png"} className='border' style={{objectFit: 'cover', width: '100%', height: '200px'}} alt="" />
@@ -313,6 +327,7 @@ const EditForm = () => {
                             !loading 
                             ? <button 
                                 type='submit'
+                                onClick={handleSubmit}
                                 className='block lg:mt-4 mb-5 bg-gray-700 hover:bg-gray-900 text-white lg:py-3 py-2 px-4 rounded-full w-72 cursor-pointer'
                             >
                                 Enregistrer 
@@ -324,7 +339,7 @@ const EditForm = () => {
                                 Chargement...
                             </button>
                         }
-                    </form>
+                    {/* </form> */}
                 </div>)
             }
         </>

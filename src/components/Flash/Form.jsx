@@ -51,30 +51,32 @@ const Form = () => {
     const handleSubmit = async () => {
         setLoading(true)
 
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("profession", profession);
-        formData.append("company", company);
-        formData.append("bio", bio);
-        formData.append("phoneNumber", phoneNumber);
-        formData.append("email", email);
-        formData.append("address", address);
-        formData.append("websiteTitle", websiteTitle);
-        formData.append("websiteLink", websiteLink);
-        formData.append("facebookTitle", facebookTitle);
-        formData.append("facebookLink", facebookLink);
-        formData.append("whatsappTitle", whatsappTitle);
-        formData.append("whatsappLink", whatsappLink);
-        formData.append("instagramTitle", instagramTitle);
-        formData.append("instagramLink", instagramLink);
-        formData.append("linkedinTitle", linkedInTitle);
-        formData.append("linkedinLink", linkedInLink);
-        formData.append("xTitle", xTitle);
-        formData.append("xLink", xLink);
-        formData.append("tiktokTitle", tiktokTitle);
-        formData.append("tiktokLink", tiktokLink);
-        formData.append("youtubeTitle", youtubeTitle);
-        formData.append("youtubeLink", youtubeLink);
+        const formData = {
+            "name": name,
+            "profession": profession,
+            "logoPicture": logo,
+            "company": company,
+            "bio": bio,
+            "phoneNumber": phoneNumber,
+            "email": email,
+            "address": address,
+            "websiteTitle": websiteTitle,
+            "websiteLink": websiteLink,
+            "facebookTitle": facebookTitle,
+            "facebookLink": facebookLink,
+            "whatsappTitle": whatsappTitle,
+            "whatsappLink": whatsappLink,
+            "instagramTitle": instagramTitle,
+            "instagramLink": instagramLink,
+            "linkedinTitle": linkedInTitle,
+            "linkedinLink": linkedInLink,
+            "xTitle": xTitle,
+            "xLink": xLink,
+            "tiktokTitle": tiktokTitle,
+            "tiktokLink": tiktokLink,
+            "youtubeTitle": youtubeTitle,
+            "youtubeLink": youtubeLink,
+        }
 
         // Fonction utilitaire pour convertir Data URL en Blob
         function dataURLtoFile(dataurl, filename) {
@@ -90,7 +92,7 @@ const Form = () => {
             
             return new File([u8arr], filename, { type: mime });
         }
-
+        console.log(formData);
         try {
             const response = await axios.post(BASE_API_URL+"/api/post/create", formData)
             console.log(response?.data);
@@ -102,6 +104,14 @@ const Form = () => {
                     const profileData = new FormData();
                     profileData.append('profilePicture', profile)
                     await axios.put(BASE_API_URL+"/api/post/picture/"+response?.data?._id, profileData)
+                    .then(res => console.log(res))
+                    .catch(err => console.log(err))
+                }
+
+                if(logo){
+                    const logoData = new FormData();
+                    logoData.append('logoPicture', logo)
+                    await axios.put(BASE_API_URL+"/api/post/logo/"+response?.data?._id, logoData)
                     .then(res => console.log(res))
                     .catch(err => console.log(err))
                 }
@@ -144,7 +154,7 @@ const Form = () => {
                 />
                 <h2 className='font-medium text-xl'>Nouvelle carte</h2>
             </div>
-            <form method='post' onSubmit={handleSubmit} >
+            {/* <form method='post'  > */}
                 {/* Images */}
                 <div className="relative">
                     <img src={cover?URL.createObjectURL(cover):"/no-banner.png"} className='border' style={{objectFit: 'cover', width: '100%', height: '200px'}} alt="" />
@@ -170,7 +180,7 @@ const Form = () => {
                         <BsCamera size={10} />
                     </div>
                     <div className='hidden'>
-                        <input type="file" name="logo" id='logo' ref={logoRef} accept="image/*" onChange={(e)=>setLogo(e.target.files[0])} />
+                        <input type="file" name="logoPicture" id='logoPicture' ref={logoRef} accept="image/*" onChange={(e)=>setLogo(e.target.files[0])} />
                     </div>
                 </div>
 
@@ -331,6 +341,7 @@ const Form = () => {
                     !loading 
                     ? <button 
                         type='submit'
+                        onClick={handleSubmit}
                         className='block lg:mt-4 mb-5 bg-gray-700 hover:bg-gray-900 text-white lg:py-3 py-2 px-4 rounded-full w-72 cursor-pointer'
                     >
                         Enregistrer 
@@ -342,7 +353,7 @@ const Form = () => {
                         Chargement...
                     </button>
                 }
-            </form>
+            {/* </form> */}
 
             <div style={{ marginTop: '20px', display: 'none' }} ref={qrCodeRef}>
                 {/* The react-qrcode-logo component with logo prop */}
