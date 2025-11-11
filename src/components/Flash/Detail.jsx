@@ -14,7 +14,7 @@ const Detail = () => {
         }
         getPost();
     }, [id])
-    console.log(item);
+    // console.log(item);
 
     const detectPlatform = () => {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -28,7 +28,7 @@ const Detail = () => {
         
         return "Desktop";
     };
-    console.log(detectPlatform());
+    // console.log(detectPlatform());
 
     const launchContactApp = () => {
         const platform = detectPlatform();
@@ -71,6 +71,93 @@ const Detail = () => {
         }
     };
 
+    const generateVCard = () => {
+        try {
+        // Construction du vCard avec tous les champs
+        const vCardLines = [
+            'BEGIN:VCARD',
+            'VERSION:3.0',
+            `FN:${item.name || ''}`,
+            // `N:${item.lastName || ''};${item.firstName || ''};;;`,
+        ];
+
+        // Téléphones
+        if (item.phoneNumber) vCardLines.push(`TEL;TYPE=WORK,VOICE:${item.phoneNumber}`);
+        // if (item.mobile) vCardLines.push(`TEL;TYPE=CELL,VOICE:${item.mobile}`);
+        // if (item.homePhone) vCardLines.push(`TEL;TYPE=HOME,VOICE:${item.homePhone}`);
+
+        // Emails
+        if (item.email) vCardLines.push(`EMAIL;TYPE=WORK:${item.email}`);
+        // if (item.personalEmail) vCardLines.push(`EMAIL;TYPE=HOME:${item.personalEmail}`);
+
+        // Entreprise et poste
+        if (item.company) vCardLines.push(`ORG:${item.company}`);
+        if (item.profession) vCardLines.push(`TITLE:${item.profession}`);
+        // if (item.department) vCardLines.push(`ROLE:${item.department}`);
+
+        // Adresse
+        if (item.address) {
+            vCardLines.push(`ADR;TYPE=WORK:;;${item.address};;;;`);
+        }
+
+        // Site web
+        if (item.website?.title) vCardLines.push(`URL:${item.website?.title}`);
+
+        // Réseaux sociaux
+        if (item.linkedin?.title) vCardLines.push(`X-SOCIALPROFILE;TYPE=linkedin:${item.linkedin?.title}`);
+        if (item.twitter?.title) vCardLines.push(`X-SOCIALPROFILE;TYPE=twitter:${item.twitter?.title}`);
+        if (item.facebook?.title) vCardLines.push(`X-SOCIALPROFILE;TYPE=facebook:${item.facebook?.title}`);
+        if (item.instagram?.title) vCardLines.push(`X-SOCIALPROFILE;TYPE=instagram:${item.instagram?.title}`);
+
+        // Bio/notes
+        if (item.bio) vCardLines.push(`NOTE:${item.bio.replace(/\n/g, '\\n')}`);
+
+        // Photo (URL ou base64)
+        if (item.profilePicture?.url) {
+            vCardLines.push(`PHOTO;VALUE=URI:${item.profilePicture?.url}`);
+        } 
+        // else if (item.photoBase64) {
+        //     vCardLines.push(`PHOTO;ENCODING=B;TYPE=JPEG:${item.photoBase64}`);
+        // }
+
+        // Date d'anniversaire
+        // if (item.birthday) {
+        //     vCardLines.push(`BDAY:${item.birthday}`);
+        // }
+
+        vCardLines.push('END:VCARD');
+
+        const vCard = vCardLines.join('\n');
+        console.log('vCard généré:', vCard); // Pour debug
+
+        const blob = new Blob([vCard], { 
+            type: 'text/vcard;charset=utf-8'
+        });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${item.name.replace(/[^a-zA-Z0-9]/g, '_')}.vcf`;
+        link.style.display = 'none';
+        
+        document.body.appendChild(link);
+        link.click();
+        
+        setTimeout(() => {
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }, 1000);
+        
+        } catch (error) {
+        console.error('Erreur vCard:', error);
+        alert('Erreur lors du téléchargement du contact');
+        }
+    };
+
+    if (!item) {
+        return <div>Contact non disponible</div>;
+    }
+
   return (
     <div className="container p-5 lg:max-w-3/5 mx-auto">
         <div>
@@ -85,7 +172,7 @@ const Detail = () => {
                     <div className='flex items-center gap-3 mb-2' style={{fontSize: "1.1rem"}}>{item?.bio}</div>
                 </div>
                 <button 
-                    onClick={launchContactApp} 
+                    onClick={generateVCard} 
                     className='bg-gray-900 text-white my-5 mx-3 py-4 px-18 cursor-pointer'
                     style={{display: 'inline-block', borderRadius: '30px'}}
                 >Enregistrer le contact</button>

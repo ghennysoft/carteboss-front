@@ -9,50 +9,88 @@ import { ChevronLeft, Trash2 } from 'lucide-react';
 const EditForm = () => {
     const {id} = useParams();
     const [data, setData] = useState({});
-    console.log(data);
-    useEffect(()=>{
-        const getPost = async ()=>{
-            const response = await axios.get(BASE_API_URL+"/api/post/"+id)
-            setData(response.data);
-            return response.data;
-        }
-        getPost();
-    }, [id])
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
+    // Références pour les fichiers
     const coverRef = useRef();
     const profileRef = useRef();
     const logoRef = useRef();
 
-    const [profile, setProfile] = useState(data?.profilePicture?.url);
-    const [cover, setCover] = useState(data?.profilePicture?.url);
-    const [logo, setLogo] = useState(data?.profilePicture?.url);
-    const [name, setName] = useState(data?.name);
-    const [profession, setProfession] = useState(data?.profession);
-    const [company, setCompany] = useState(data?.company);
-    const [bio, setBio] = useState(data?.bio);
-    const [phoneNumber, setPhoneNumber] = useState(data?.phoneNumber);
-    const [email, setEmail] = useState(data?.email);
-    const [address, setAddress] = useState(data?.address);
-    const [websiteTitle, setWebsiteTitle] = useState(data?.website?.title);
-    const [websiteLink, setWebsiteLink] = useState(data?.website?.url);
-    const [facebookTitle, setFacebookTitle] = useState(data?.facebook?.title);
-    const [facebookLink, setFacebookLink] = useState(data?.facebook?.url);
-    const [whatsappTitle, setWhatsappTitle] = useState(data?.whatsapp?.title);
-    const [whatsappLink, setWhatsappLink] = useState(data?.whatsapp?.url);
-    const [instagramTitle, setInstagramTitle] = useState(data?.instagram?.title);
-    const [instagramLink, setInstagramLink] = useState(data?.instagram?.url);
-    const [linkedInTitle, setLinkedInTitle] = useState(data?.linkedin?.title);
-    const [linkedInLink, setLinkedInLink] = useState(data?.linkedin?.url);
-    const [xTitle, setXTitle] = useState(data?.x?.title);
-    const [xLink, setXLink] = useState(data?.x?.url);
-    const [tiktokTitle, setTiktokTitle] = useState(data?.tiktok?.title);
-    const [tiktokLink, setTiktokLink] = useState(data?.tiktok?.url);
-    const [youtubeTitle, setYoutubeTitle] = useState(data?.youtube?.title);
-    const [youtubeLink, setYoutubeLink] = useState(data?.youtube?.url);
+    // États pour les images (fichiers)
+    const [profile, setProfile] = useState(null);
+    const [cover, setCover] = useState(null);
+    const [logo, setLogo] = useState(null);
 
-    const [loading, setLoading] = useState(false);
+    // États pour les données du formulaire
+    const [name, setName] = useState('');
+    const [profession, setProfession] = useState('');
+    const [company, setCompany] = useState('');
+    const [bio, setBio] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [email, setEmail] = useState('');
+    const [address, setAddress] = useState('');
+    const [websiteTitle, setWebsiteTitle] = useState('');
+    const [websiteLink, setWebsiteLink] = useState('');
+    const [facebookTitle, setFacebookTitle] = useState('');
+    const [facebookLink, setFacebookLink] = useState('');
+    const [whatsappTitle, setWhatsappTitle] = useState('');
+    const [whatsappLink, setWhatsappLink] = useState('');
+    const [instagramTitle, setInstagramTitle] = useState('');
+    const [instagramLink, setInstagramLink] = useState('');
+    const [linkedInTitle, setLinkedInTitle] = useState('');
+    const [linkedInLink, setLinkedInLink] = useState('');
+    const [xTitle, setXTitle] = useState('');
+    const [xLink, setXLink] = useState('');
+    const [tiktokTitle, setTiktokTitle] = useState('');
+    const [tiktokLink, setTiktokLink] = useState('');
+    const [youtubeTitle, setYoutubeTitle] = useState('');
+    const [youtubeLink, setYoutubeLink] = useState('');
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        const getPost = async () => {
+            const response = await axios.get(BASE_API_URL + "/api/post/" + id);
+            setData(response.data);
+            return response.data;
+        }
+        getPost();
+    }, [id]);
+
+    // Mettre à jour les états quand les données sont chargées
+    useEffect(() => {
+        if (data && Object.keys(data).length > 0) {
+            setName(data.name || '');
+            setProfession(data.profession || '');
+            setCompany(data.company || '');
+            setBio(data.bio || '');
+            setPhoneNumber(data.phoneNumber || '');
+            setEmail(data.email || '');
+            setAddress(data.address || '');
+            setWebsiteTitle(data.website?.title || '');
+            setWebsiteLink(data.website?.url || '');
+            setFacebookTitle(data.facebook?.title || '');
+            setFacebookLink(data.facebook?.url || '');
+            setWhatsappTitle(data.whatsapp?.title || '');
+            setWhatsappLink(data.whatsapp?.url || '');
+            setInstagramTitle(data.instagram?.title || '');
+            setInstagramLink(data.instagram?.url || '');
+            setLinkedInTitle(data.linkedin?.title || '');
+            setLinkedInLink(data.linkedin?.url || '');
+            setXTitle(data.x?.title || '');
+            setXLink(data.x?.url || '');
+            setTiktokTitle(data.tiktok?.title || '');
+            setTiktokLink(data.tiktok?.url || '');
+            setYoutubeTitle(data.youtube?.title || '');
+            setYoutubeLink(data.youtube?.url || '');
+        }
+    }, [data]); // Ce useEffect s'exécute quand data change
+
+    // Fonctions pour les images
+    const getImageUrl = (file, dataUrl) => {
+        if (file) return URL.createObjectURL(file);
+        if (dataUrl) return dataUrl;
+        return "/no-img.jpg";
+    };
 
     const handleSubmit = async () => {
         setLoading(true)
@@ -126,7 +164,7 @@ const EditForm = () => {
     return (
         <>
             {
-                !data
+                !data || Object.keys(data).length === 0
                 ? <p>Chargement...</p>
                 : (<div className="container p-5 lg:max-w-3/5 mx-auto">
                     <NavBar />
@@ -143,7 +181,7 @@ const EditForm = () => {
                     {/* <form  > */}
                         {/* Images */}
                         <div className="relative">
-                            <img src={cover?URL.createObjectURL(cover):"/no-banner.png"} className='border' style={{objectFit: 'cover', width: '100%', height: '200px'}} alt="" />
+                            <img src={getImageUrl(cover, data.coverPicture?.url)} className='border' style={{objectFit: 'cover', width: '100%', height: '200px'}} alt="" />
                             <div className="flex justify-center items-center p-1 border border-gray-300 rounded-full bg-white absolute right-5 top-3 cursor-pointer" onClick={() => {coverRef.current.click()}}>
                                 <BsCamera />
                             </div>
@@ -152,7 +190,7 @@ const EditForm = () => {
                             </div>
                         </div>
                         <div className="relative"  style={{ width: '140px', height: '140px', margin: '-50px 10px 0px'}}>
-                            <img src={profile?URL.createObjectURL(profile):"/no-img.jpg"} className='border' style={{ width: '140px', height: '140px', objectFit: 'cover', border: '5px solid #ddd', borderRadius: '50%', margin: '-40px 10px 0px'}} alt="" />
+                            <img src={getImageUrl(profile, data.profilePicture?.url)} className='border' style={{ width: '140px', height: '140px', objectFit: 'cover', border: '5px solid #ddd', borderRadius: '50%', margin: '-40px 10px 0px'}} alt="" />
                             <div className="flex justify-center items-center p-1 border rounded-full bg-white absolute right-0 bottom-0 cursor-pointer" onClick={() => {profileRef.current.click()}}>
                                 <BsCamera />
                             </div>
@@ -161,7 +199,7 @@ const EditForm = () => {
                             </div>
                         </div>
                         <div className="relative"  style={{ width: '65px', height: '65px', margin: '-90px 0px 0px 120px'}}>
-                            <img src={logo?URL.createObjectURL(logo):"/no-img.jpg"} className='border' style={{ width: '65px', height: '65px', objectFit: 'cover', border: '3px solid #ddd', borderRadius: '50%', margin: '-40px 10px 0px'}} alt="" />
+                            <img src={getImageUrl(logo, data.companyLogo?.url)} className='border' style={{ width: '65px', height: '65px', objectFit: 'cover', border: '3px solid #ddd', borderRadius: '50%', margin: '-40px 10px 0px'}} alt="" />
                             <div className="flex justify-center items-center p-1 border border-gray-400 rounded-full bg-white absolute -right-2 bottom-0 cursor-pointer" onClick={() => {logoRef.current.click()}}>
                                 <BsCamera size={10} />
                             </div>
@@ -175,24 +213,28 @@ const EditForm = () => {
                             <input type="text" name="name" id="name"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setName(e.target.value)} 
+                                value={name}
                                 placeholder='Nom' 
                                 required
                             />
                             <input type="text" name="profession" id="profession"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setProfession(e.target.value)}
+                                value={profession}
                                 placeholder='Titre du travail'  
                                 required
                             />
                             <input type="text" name="company" id="company"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setCompany(e.target.value)}
+                                value={company}
                                 placeholder='company' 
                             />
                         </div>
                         <textarea name="bio" id="bio" rows={5}
                             className='block w-full mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-xl'
                             onChange={(e)=>setBio(e.target.value)}
+                                value={bio}
                             placeholder='Biographie'  
                         >
                         </textarea>
@@ -202,16 +244,19 @@ const EditForm = () => {
                             <input type="text" name="phoneNumber" id="phoneNumber"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setPhoneNumber(e.target.value)}
+                                value={phoneNumber}
                                 placeholder='Numéro de téléphone' 
                             />
                             <input type="email" name="email" id="email"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setEmail(e.target.value)}
+                                value={email}
                                 placeholder='Adresse email' 
                             />
                             <input type="text" name="address" id="address"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setAddress(e.target.value)}
+                                value={address}
                                 placeholder='Adresse physique' 
                             />
                         </div>
@@ -223,11 +268,13 @@ const EditForm = () => {
                                 <input type="text" name="websiteTitle" id="websiteTitle"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setWebsiteTitle(e.target.value)}
+                                    value={websiteTitle}
                                     placeholder='Titre' 
                                 />
                                 <input type="text" name="websiteLink" id="websiteLink"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setWebsiteLink(e.target.value)}
+                                    value={websiteLink}
                                     placeholder='Lien' 
                                 />
                             </div>
@@ -236,11 +283,13 @@ const EditForm = () => {
                                 <input type="text" name="facebookTitle" id="facebookTitle"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setFacebookTitle(e.target.value)}
+                                    value={facebookTitle}
                                     placeholder='Titre' 
                                 />
                                 <input type="text" name="facebookLink" id="facebookLink"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setFacebookLink(e.target.value)}
+                                    value={facebookLink}
                                     placeholder='Lien' 
                                 />
                             </div>
@@ -249,11 +298,13 @@ const EditForm = () => {
                                 <input type="text" name="whatsappTitle" id="whatsappTitle"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setWhatsappTitle(e.target.value)}
+                                    value={whatsappTitle}
                                     placeholder='Titre' 
                                 />
                                 <input type="text" name="whatsappLink" id="whatsappLink"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setWhatsappLink(e.target.value)}
+                                    value={whatsappLink}
                                     placeholder='Lien' 
                                 />
                             </div>
@@ -262,11 +313,13 @@ const EditForm = () => {
                                 <input type="text" name="instagramTitle" id="instagramTitle"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setInstagramTitle(e.target.value)}
+                                    value={instagramTitle}
                                     placeholder='Titre' 
                                 />
                                 <input type="text" name="instagramLink" id="instagramLink"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setInstagramLink(e.target.value)}
+                                    value={instagramLink}
                                     placeholder='Lien' 
                                 />
                             </div>
@@ -275,11 +328,13 @@ const EditForm = () => {
                                 <input type="text" name="linkedinTitle" id="linkedinTitle"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setLinkedInTitle(e.target.value)}
+                                    value={linkedInTitle}
                                     placeholder='Titre' 
                                 />
                                 <input type="text" name="linkedinLink" id="linkedinLink"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setLinkedInLink(e.target.value)}
+                                    value={linkedInLink}
                                     placeholder='Lien' 
                                 />
                             </div>
@@ -288,11 +343,13 @@ const EditForm = () => {
                                 <input type="text" name="xTitle" id="xTitle"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setXTitle(e.target.value)}
+                                    value={xTitle}
                                     placeholder='Titre' 
                                 />
                                 <input type="text" name="xLink" id="xLink"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setXLink(e.target.value)}
+                                    value={xLink}
                                     placeholder='Lien' 
                                 />
                             </div>
@@ -301,11 +358,13 @@ const EditForm = () => {
                                 <input type="text" name="tiktokTitle" id="tiktokTitle"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setTiktokTitle(e.target.value)}
+                                    value={tiktokTitle}
                                     placeholder='Titre' 
                                 />
                                 <input type="text" name="tiktokLink" id="tiktokLink"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setTiktokLink(e.target.value)}
+                                    value={tiktokLink}
                                     placeholder='Lien' 
                                 />
                             </div>
@@ -314,11 +373,13 @@ const EditForm = () => {
                                 <input type="text" name="youtubeTitle" id="youtubeTitle"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setYoutubeTitle(e.target.value)}
+                                    value={youtubeTitle}
                                     placeholder='Titre' 
                                 />
                                 <input type="text" name="youtubeLink" id="youtubeLink"
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setYoutubeLink(e.target.value)}
+                                    value={youtubeLink}
                                     placeholder='Lien' 
                                 />
                             </div>
