@@ -98,7 +98,7 @@ const Form = () => {
             console.log(response?.data);
             
             if(response?.data){
-                setQrData(response?.data?._id);
+                setQrData(`https://carteboss-front.vercel.app/carte/${response?.data?._id}`);
 
                 if(profile){
                     const profileData = new FormData();
@@ -129,7 +129,7 @@ const Form = () => {
                 const qrCodeFile = dataURLtoFile(qrCodeDataUrl, 'qrcode.png');
                 console.log(qrCodeFile);
                 const qrCodeData = new FormData();
-                qrCodeData.append('data', `${BASE_API_URL}/carte/${response?.data?._id}`)
+                qrCodeData.append('data', qrData)
                 qrCodeData.append('qrCode', qrCodeFile)
                 await axios.put(BASE_API_URL+"/api/post/qrcode/"+response?.data?._id, qrCodeData)
                 .then(res => console.log(res))

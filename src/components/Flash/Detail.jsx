@@ -71,86 +71,98 @@ const Detail = () => {
         }
     };
 
-    const generateVCard = () => {
+    // Fonction pour convertir une image URL en base64
+    const imageUrlToBase64 = async (url) => {
         try {
-        // Construction du vCard avec tous les champs
-        const vCardLines = [
-            'BEGIN:VCARD',
-            'VERSION:3.0',
-            `FN:${item.name || ''}`,
-            // `N:${item.lastName || ''};${item.firstName || ''};;;`,
-        ];
-
-        // Téléphones
-        if (item.phoneNumber) vCardLines.push(`TEL;TYPE=WORK,VOICE:${item.phoneNumber}`);
-        // if (item.mobile) vCardLines.push(`TEL;TYPE=CELL,VOICE:${item.mobile}`);
-        // if (item.homePhone) vCardLines.push(`TEL;TYPE=HOME,VOICE:${item.homePhone}`);
-
-        // Emails
-        if (item.email) vCardLines.push(`EMAIL;TYPE=WORK:${item.email}`);
-        // if (item.personalEmail) vCardLines.push(`EMAIL;TYPE=HOME:${item.personalEmail}`);
-
-        // Entreprise et poste
-        if (item.company) vCardLines.push(`ORG:${item.company}`);
-        if (item.profession) vCardLines.push(`TITLE:${item.profession}`);
-        // if (item.department) vCardLines.push(`ROLE:${item.department}`);
-
-        // Adresse
-        if (item.address) {
-            vCardLines.push(`ADR;TYPE=WORK:;;${item.address};;;;`);
-        }
-
-        // Site web
-        if (item.website?.title) vCardLines.push(`URL:${item.website?.title}`);
-
-        // Réseaux sociaux
-        if (item.linkedin?.title) vCardLines.push(`X-SOCIALPROFILE;TYPE=linkedin:${item.linkedin?.title}`);
-        if (item.twitter?.title) vCardLines.push(`X-SOCIALPROFILE;TYPE=twitter:${item.twitter?.title}`);
-        if (item.facebook?.title) vCardLines.push(`X-SOCIALPROFILE;TYPE=facebook:${item.facebook?.title}`);
-        if (item.instagram?.title) vCardLines.push(`X-SOCIALPROFILE;TYPE=instagram:${item.instagram?.title}`);
-
-        // Bio/notes
-        if (item.bio) vCardLines.push(`NOTE:${item.bio.replace(/\n/g, '\\n')}`);
-
-        // Photo (URL ou base64)
-        if (item.profilePicture?.url) {
-            vCardLines.push(`PHOTO;VALUE=URI:${item.profilePicture?.url}`);
-        } 
-        // else if (item.photoBase64) {
-        //     vCardLines.push(`PHOTO;ENCODING=B;TYPE=JPEG:${item.photoBase64}`);
-        // }
-
-        // Date d'anniversaire
-        // if (item.birthday) {
-        //     vCardLines.push(`BDAY:${item.birthday}`);
-        // }
-
-        vCardLines.push('END:VCARD');
-
-        const vCard = vCardLines.join('\n');
-        console.log('vCard généré:', vCard); // Pour debug
-
-        const blob = new Blob([vCard], { 
-            type: 'text/vcard;charset=utf-8'
-        });
-        const url = URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${item.name.replace(/[^a-zA-Z0-9]/g, '_')}.vcf`;
-        link.style.display = 'none';
-        
-        document.body.appendChild(link);
-        link.click();
-        
-        setTimeout(() => {
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }, 1000);
-        
+            const response = await fetch(url);
+            const blob = await response.blob();
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
         } catch (error) {
-        console.error('Erreur vCard:', error);
-        alert('Erreur lors du téléchargement du contact');
+            console.error('Erreur conversion image:', error);
+            return null;
+        }
+    };
+
+    const generateVCard = async () => {
+        try {
+            let photoBase64 = null;
+            
+            // Convertir l'image de profil en base64 si elle existe
+            if (item?.profilePicture?.url) {
+                photoBase64 = await imageUrlToBase64(item.profilePicture.url);
+            }
+                
+            // Construction du vCard avec tous les champs
+            const vCardLines = [
+                'BEGIN:VCARD',
+                'VERSION:3.0',
+                `FN:${item.name || ''}`,
+            ];
+
+            // Téléphones
+            if (item.phoneNumber) vCardLines.push(`TEL;TYPE=WORK,VOICE:${item.phoneNumber}`);
+
+            // Emails
+            if (item.email) vCardLines.push(`EMAIL;TYPE=WORK:${item.email}`);
+
+            // Entreprise et poste
+            if (item.company) vCardLines.push(`ORG:${item.company}`);
+            if (item.profession) vCardLines.push(`TITLE:${item.profession}`);
+
+            // Adresse
+            if (item.address) {
+                vCardLines.push(`ADR;TYPE=WORK:;;${item.address};;;;`);
+            }
+
+            // Site web
+            if (item.website?.url) vCardLines.push(`URL:${item.website?.url}`);
+
+            // Réseaux sociaux
+            if (item.linkedin?.url) vCardLines.push(`X-SOCIALPROFILE;TYPE=linkedin:${item.linkedin?.url}`);
+            if (item.x?.url) vCardLines.push(`X-SOCIALPROFILE;TYPE=twitter:${item.x?.url}`);
+            if (item.facebook?.url) vCardLines.push(`X-SOCIALPROFILE;TYPE=facebook:${item.facebook?.url}`);
+            if (item.instagram?.url) vCardLines.push(`X-SOCIALPROFILE;TYPE=instagram:${item.instagram?.url}`);
+
+            // Bio/notes
+            if (item.bio) vCardLines.push(`NOTE:${item.bio.replace(/\n/g, '\\n')}`);
+
+            // Photo en base64
+            if (photoBase64) {
+                // Extraire seulement la partie base64 (sans le préfixe data:image/...)
+                const base64Data = photoBase64.split(',')[1];
+                vCardLines.push(`PHOTO;ENCODING=B;TYPE=JPEG:${base64Data}`);
+            }
+
+            vCardLines.push('END:VCARD');
+
+            const vCard = vCardLines.join('\n');
+            console.log('vCard généré:', vCard); // Pour debug
+
+            const blob = new Blob([vCard], { 
+                type: 'text/vcard;charset=utf-8'
+            });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${item.name.replace(/[^a-zA-Z0-9]/g, '_')}.vcf`;
+            link.style.display = 'none';
+            
+            document.body.appendChild(link);
+            link.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 1000);
+        } catch (error) {
+            console.error('Erreur vCard:', error);
+            alert('Erreur lors du téléchargement du contact');
         }
     };
 
@@ -189,31 +201,31 @@ const Detail = () => {
                         <img src="/social/placeholder.png" width={40} />
                         <Link to={item?.address} style={{fontSize: "1.1rem"}}>{item?.address}</Link>
                     </div>}
-                    {item?.facebook?.title && <div className='flex items-center gap-3 mb-5'>
+                    {item?.facebook?.url && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/facebook.png" width={40} />
                         <Link target={"_blank"} to={item?.facebook?.url} style={{fontSize: "1.1rem"}}>{item?.facebook?.title ? item?.facebook?.title : "Facebook"}</Link>
                     </div>}
-                    {item?.whatsapp?.title && <div className='flex items-center gap-3 mb-5'>
+                    {item?.whatsapp?.url && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/whatsapp.png" width={40} />
                         <Link target={"_blank"} to={item?.whatsapp?.url} style={{fontSize: "1.1rem"}}>{item?.whatsapp?.title ? item?.whatsapp?.title : "Whatsapp"}</Link>
                     </div>}
-                    {item?.instagram?.title && <div className='flex items-center gap-3 mb-5'>
+                    {item?.instagram?.url && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/instagram.png" width={40} />
                         <Link target={"_blank"} to={item?.instagram?.url} style={{fontSize: "1.1rem"}}>{item?.instagram?.title ? item?.instagram?.title : "Instagram"}</Link>
                     </div>}
-                    {item?.linkedin?.title && <div className='flex items-center gap-3 mb-5'>
+                    {item?.linkedin?.url && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/linkedin.jpg" width={40} />
                         <Link target={"_blank"} to={item?.linkedin?.url} style={{fontSize: "1.1rem"}}>{item?.linkedin?.title ? item?.linkedin?.title : "Linkedin"}</Link>
                     </div>}
-                    {item?.x?.title && <div className='flex items-center gap-3 mb-5'>
+                    {item?.x?.url && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/x.jpg" width={40} />
                         <Link target={"_blank"} to={item?.x?.url} style={{fontSize: "1.1rem"}}>{item?.x?.title ? item?.x?.title : "X"}</Link>
                     </div>}
-                    {item?.tiktok?.title && <div className='flex items-center gap-3 mb-5'>
+                    {item?.tiktok?.url && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/tiktok.jpg" width={40} />
                         <Link target={"_blank"} to={item?.tiktok?.url} style={{fontSize: "1.1rem"}}>{item?.tiktok?.title ? item?.tiktok?.title : "Tiktok"}</Link>
                     </div>}
-                    {item?.youtube?.title && <div className='flex items-center gap-3 mb-5'>
+                    {item?.youtube?.url && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/youtube.jpg" width={40} />
                         <Link target={"_blank"} to={item?.youtube?.url} style={{fontSize: "1.1rem"}}>{item?.youtube?.title ? item?.youtube?.title : "Youtube"}</Link>
                     </div>}

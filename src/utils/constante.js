@@ -1,4 +1,5 @@
 let BASE_API_URI;
+let FRONT_API_URL
 
 if(import.meta.env.VITE_ENV === 'developpement') {
     BASE_API_URI = import.meta.env.VITE_API_URL_LOCAL;
