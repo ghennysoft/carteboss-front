@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import html2canvas from 'html2canvas';
 
 const QRCodeView = ({item, open}) => {
@@ -56,11 +56,11 @@ const QRCodeView = ({item, open}) => {
             <X />
         </p>
         <h2 className="text-center" style={{fontSize: "1.5rem"}}>{item?.name}</h2>
-        <button 
+        {/* <button 
           onClick={handleDownloadImage} 
           className='cursor-pointer border p-1 m-1 rounded-lg bg-blue-500 text-white px-4 py-2'
           disabled={!imageLoaded}
-        >{imageLoaded ? 'Télécharger' : 'Chargement...'}</button>
+        >{imageLoaded ? 'Télécharger' : 'Chargement...'}</button> */}
         <div ref={componentRef} className="relative flex flex-col border border-[#26265eff] border-3 rounded-lg overflow-hidden">
             {/* <img src={"/no-img.jpg"} width={200} height={200} alt="qrcode" /> */}
             {item?.qrCode?.url && (
@@ -68,7 +68,7 @@ const QRCodeView = ({item, open}) => {
                 src={item.qrCode.url} 
                 className='w-full' 
                 alt="qrcode" 
-                crossOrigin="anonymous" // Important pour CORS
+                // crossOrigin="anonymous" // Important pour CORS
                 onLoad={() => setImageLoaded(true)}
                 onError={() => {
                   console.error("Erreur de chargement du QR code");
