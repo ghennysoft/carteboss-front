@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BASE_API_URL } from '../../utils/constante';
+import vCards from 'vcards-js';
 
 const Detail = () => {
     const {id} = useParams();
@@ -90,64 +91,115 @@ const Detail = () => {
 
     const generateVCard = async () => {
         try {
-            let photoBase64 = null;
+            // Créer une nouvelle vCard
+            const vCard = vCards();
+
+            // Informations de base
+            vCard.firstName = item.name.split(' ')[0] || '';
+            vCard.lastName = item.name.split(' ').slice(1).join(' ') || '';
+            vCard.name = item.name;
+            vCard.formattedName = item.name;
             
-            // Convertir l'image de profil en base64 si elle existe
-            if (item?.profilePicture?.url) {
-                photoBase64 = await imageUrlToBase64(item.profilePicture.url);
+            // Contacts
+            if (item.phoneNumber) {
+                vCard.cellPhone = item.phoneNumber;
             }
-                
-            // Construction du vCard avec tous les champs
-            const vCardLines = [
-                'BEGIN:VCARD',
-                'VERSION:3.0',
-                `FN:${item.name || ''}`,
-            ];
 
-            // Téléphones
-            if (item.phoneNumber) vCardLines.push(`TEL;TYPE=WORK,VOICE:${item.phoneNumber}`);
+            if (item.email) {
+                vCard.email = item.email;
+                vCard.workEmail = item.email;
+            }
 
-            // Emails
-            if (item.email) vCardLines.push(`EMAIL;TYPE=WORK:${item.email}`);
+            // Entreprise
+            if (item.company) {
+                vCard.organization = item.company;
+            }
 
-            // Entreprise et poste
-            if (item.company) vCardLines.push(`ORG:${item.company}`);
-            if (item.profession) vCardLines.push(`TITLE:${item.profession}`);
+            if (item.profession) {
+                vCard.title = item.profession;
+            }
 
             // Adresse
             if (item.address) {
-                vCardLines.push(`ADR;TYPE=WORK:;;${item.address};;;;`);
+                vCard.workAddress.label = 'Adresse du bureau';
+                vCard.workAddress.street = item.address;
             }
 
             // Site web
-            if (item.website?.url) vCardLines.push(`URL:${item.website?.url}`);
-
-            // Réseaux sociaux
-            if (item.linkedin?.url) vCardLines.push(`X-SOCIALPROFILE;TYPE=linkedin:${item.linkedin?.url}`);
-            if (item.x?.url) vCardLines.push(`X-SOCIALPROFILE;TYPE=twitter:${item.x?.url}`);
-            if (item.facebook?.url) vCardLines.push(`X-SOCIALPROFILE;TYPE=facebook:${item.facebook?.url}`);
-            if (item.instagram?.url) vCardLines.push(`X-SOCIALPROFILE;TYPE=instagram:${item.instagram?.url}`);
-
-            // Bio/notes
-            if (item.bio) vCardLines.push(`NOTE:${item.bio.replace(/\n/g, '\\n')}`);
-
-            // Photo en base64
-            if (photoBase64) {
-                // Extraire seulement la partie base64 (sans le préfixe data:image/...)
-                const base64Data = photoBase64.split(',')[1];
-                vCardLines.push(`PHOTO;ENCODING=B;TYPE=JPEG:${base64Data}`);
+            if (item.website?.url) {
+                vCard.workUrl = item.website.url;
             }
 
-            vCardLines.push('END:VCARD');
+            // Réseaux sociaux
+            if (item.linkedin?.url) {
+                vCard.socialUrls['linkedIn'] = item.linkedin.url;
+            }
 
-            const vCard = vCardLines.join('\n');
-            console.log('vCard généré:', vCard); // Pour debug
+            if (item.x?.url) {
+                vCard.socialUrls['twitter'] = item.x.url;
+            }
 
-            const blob = new Blob([vCard], { 
+            if (item.facebook?.url) {
+                vCard.socialUrls['facebook'] = item.facebook.url;
+            }
+
+            if (item.instagram?.url) {
+                vCard.socialUrls['instagram'] = item.instagram.url;
+            }
+
+            if (item.whatsapp?.url) {
+                vCard.socialUrls['whatsapp'] = item.whatsapp.url;
+            }
+
+            if (item.tiktok?.url) {
+                vCard.socialUrls['tiktok'] = item.tiktok.url;
+            }
+
+            if (item.youtube?.url) {
+                vCard.socialUrls['youtube'] = item.youtube.url;
+            }
+
+            // Notes/Bio
+            if (item.bio) {
+                vCard.note = item.bio;
+            }
+
+            // Photo de profil
+            if (item?.profilePicture?.url) {
+                try {
+                    const photoBase64 = await imageUrlToBase64(item.profilePicture.url);
+                    if (photoBase64) {
+                        // La bibliothèque vCards gère automatiquement l'encodage base64
+                        vCard.photo.attachFromUrl(item.profilePicture.url);
+                    }
+                } catch (error) {
+                    console.warn('Impossible d\'ajouter la photo:', error);
+                }
+            }
+
+            // Logo
+            if (item?.companyLogo?.url) {
+                try {
+                    const photoBase64 = await imageUrlToBase64(item.companyLogo.url);
+                    if (photoBase64) {
+                        // La bibliothèque vCards gère automatiquement l'encodage base64
+                        vCard.photo.attachFromUrl(item.companyLogo.url);
+                    }
+                } catch (error) {
+                    console.warn('Impossible d\'ajouter le logo:', error);
+                }
+            }
+                
+            // Générer le fichier vCard
+            const vCardString = vCard.getFormattedString();
+            
+            const blob = new Blob([vCardString], { 
                 type: 'text/vcard;charset=utf-8'
             });
-            const url = URL.createObjectURL(blob);
             
+            console.log('vCard généré:', vCardString); // Pour debug
+
+            const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = `${item.name.replace(/[^a-zA-Z0-9]/g, '_')}.vcf`;
@@ -167,7 +219,7 @@ const Detail = () => {
     };
 
     if (!item) {
-        return <div>Contact non disponible</div>;
+        return <div className='text-center p-3'>Chargement...</div>;
     }
 
   return (
