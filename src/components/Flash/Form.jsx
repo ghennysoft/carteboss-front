@@ -98,7 +98,7 @@ const Form = () => {
             console.log(response?.data);
             
             if(response?.data){
-                setQrData(`https://carteboss-front.vercel.app/carte/${response?.data?._id}`);
+                setQrData(`https://card.lacarteboss.com/${response?.data?._id}`);
 
                 if(profile){
                     const profileData = new FormData();
