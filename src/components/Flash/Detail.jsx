@@ -75,7 +75,16 @@ const Detail = () => {
     // Fonction pour convertir une image URL en base64
     const imageUrlToBase64 = async (url) => {
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+
             const blob = await response.blob();
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -167,23 +176,23 @@ const Detail = () => {
             // Photo de profil
             if (item?.profilePicture?.url) {
                 try {
+                    vCard.photo.attachFromUrl(item?.profilePicture?.url, 'avif');
                     const photoBase64 = await imageUrlToBase64(item.profilePicture.url);
                     if (photoBase64) {
                         // La bibliothèque vCards gère automatiquement l'encodage base64
-                        vCard.photo.attachFromUrl(item.profilePicture.url);
                     }
                 } catch (error) {
                     console.warn('Impossible d\'ajouter la photo:', error);
                 }
             }
 
-            // Logo
+            // Logo 
             if (item?.companyLogo?.url) {
+                vCard.photo.attachFromUrl(item?.companyLogo?.url, 'avif');
                 try {
                     const photoBase64 = await imageUrlToBase64(item.companyLogo.url);
                     if (photoBase64) {
                         // La bibliothèque vCards gère automatiquement l'encodage base64
-                        vCard.photo.attachFromUrl(item.companyLogo.url);
                     }
                 } catch (error) {
                     console.warn('Impossible d\'ajouter le logo:', error);
