@@ -21,12 +21,12 @@ function App() {
             <Route path='/auth/register' element={<Register />} />       
           </>
         }
-        <Route path='/carte/:id' index element={<Detail />} />
+        <Route path='/carte/:id' element={<Detail />} />
         <Route element={<PrivateRoute />} >
           <Route path='*' element={<Navigate to='/dashboard' />} />
           <Route path='/dashboard' index element={<Flash />} />
-          <Route path='/form' index element={<Form />} />
-          <Route path='/form/edit/:id' index element={<EditForm />} />
+          <Route path='/form' element={<Form />} />
+          <Route path='/form/edit/:id' element={<EditForm />} />
         </Route>
       </Routes>
     </BrowserRouter>
