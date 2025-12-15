@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BASE_API_URL } from '../../utils/constante';
-import { Buffer } from 'buffer'
+import vCards from 'vcards-js';
 
 const Detail = () => {
     const {id} = useParams();
@@ -15,127 +15,203 @@ const Detail = () => {
         }
         getPost();
     }, [id])
+    // console.log(item);
+
+    const detectPlatform = () => {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        
+        // Windows Phone
+        if (/windows phone/i.test(userAgent)) return "Windows Phone";
+        // Android
+        if (/android/i.test(userAgent)) return "Android";
+        // iOS
+        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return "iOS";
+        
+        return "Desktop";
+    };
+    // console.log(detectPlatform());
+
+    const launchContactApp = () => {
+        const platform = detectPlatform();
+        
+        switch (platform) {
+            case 'Android':
+                // Intent Android pour l'application Contacts
+                const androidIntent = `intent://insert/contact?name=${encodeURIComponent(item.name)}&phone=${encodeURIComponent(item.phone)}&email=${encodeURIComponent(item.email)}#Intent;scheme=com.android.contacts;action=com.android.contacts.action.INSERT;end`;
+                window.location.href = androidIntent;
+                break;
+                
+            case 'iOS':
+                // iOS n'a pas de schéma direct pour pré-remplir les contacts
+                // On ouvre l'app Contacts et on suggère à l'utilisateur de créer manuellement
+                const iosUrl = `contacts://`;
+                window.location.href = iosUrl;
+                
+                // Montrer un message avec les informations
+                setTimeout(() => {
+                alert(`Créez un nouveau contact avec:\nNom: ${item.name}\nTéléphone: ${item.phone}\nEmail: ${item.email}`);
+                }, 1000);
+                break;
+                
+            case 'Windows Phone':
+                // Windows Phone
+                window.location.href = `tel:${item.phone}`;
+                break;
+                
+            default:
+                // Desktop - ouvrir les applications par défaut
+                const confirmed = window.confirm(
+                `Voulez-vous:\n- Appeler: ${item.phone}\n- Envoyer un email: ${item.email}\n\nCliquez sur OK pour l'email ou Annuler pour appeler`
+                );
+                
+                if (confirmed) {
+                window.location.href = `mailto:${item.email}?subject=Contact ${item.name}&body=Bonjour ${item.name},`;
+                } else {
+                window.location.href = `tel:${item.phone}`;
+                }
+        }
+    };
+
+    // Fonction pour convertir une image URL en base64
+    const imageUrlToBase64 = async (url) => {
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+
+            const blob = await response.blob();
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        } catch (error) {
+            console.error('Erreur conversion image:', error);
+            return null;
+        }
+    };
 
     const generateVCard = async () => {
         try {
-            let photoBase64 = null;
-            // Convertir l'image en base64
-            if (item?.profilePicture?.url) {
-                try {
-                    // Utiliser axios pour récupérer l'image
-                    const response = await axios.get(item.profilePicture.url, {
-                        responseType: 'arraybuffer' 
-                    });
-                    
-                    // Convertir en base64
-                    const buffer = Buffer.from(response.data, 'binary');
-                    photoBase64 = buffer.toString('base64');
-                    
-                    // Pour debug : vérifier la taille
-                    console.log('Taille base64:', photoBase64.length, 'caractères');
-                } catch (error) {
-                    console.warn('Impossible de charger la photo:', error);
-                }
-            }
+            // Créer une nouvelle vCard
+            const vCard = vCards();
 
-            // Construire le vCard ligne par ligne comme votre exemple
-            const vCardLines = [
-                'BEGIN:VCARD',
-                'VERSION:3.0',
-                `REV:${new Date().toISOString()}`,
-            ];
-
-            // Nom - IMPORTANT: format "Nom;Prénom;;;" pour iOS
-            const nameParts = item?.name?.split(' ');
-            const lastName = nameParts[nameParts?.length - 1] || '';
-            const firstName = nameParts?.slice(0, -1).join(' ') || item?.name;
+            // Informations de base
+            vCard.firstName = item.name.split(' ')[0] || '';
+            vCard.lastName = item.name.split(' ').slice(1).join(' ') || '';
+            vCard.name = item.name;
+            vCard.formattedName = item.name;
             
-            vCardLines.push(`N;CHARSET=utf-8:${lastName};${firstName};;;`);
-            vCardLines.push(`FN;CHARSET=utf-8:${item?.name}`);
-
-            // Titre et organisation
-            if (item?.profession) {
-                vCardLines.push(`TITLE;CHARSET=utf-8:${item?.profession}`);
-            }
-            if (item?.company) {
-                vCardLines.push(`ORG;CHARSET=utf-8:${item?.company}`);
+            // Contacts
+            if (item.phoneNumber) {
+                vCard.cellPhone = item.phoneNumber;
             }
 
-            // Note/Bio (échapper les retours à la ligne)
-            if (item?.bio) {
-                const formattedBio = item?.bio.replace(/\n/g, '\\n');
-                vCardLines.push(`NOTE;CHARSET=utf-8:${formattedBio}`);
+            if (item.email) {
+                vCard.email = item.email;
+                vCard.workEmail = item.email;
             }
 
-            // URLs - format spécifique comme votre exemple
-            if (item?.linkedin?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.linkedin.url}`);
-            }
-            if (item?.website?.url) {
-                vCardLines.push(`URL;TYPE=Website:${item?.website.url}`);
-            }
-            if (item?.facebook?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.facebook.url}`);
-            }
-            if (item?.instagram?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.instagram.url}`);
-            }
-            if (item?.x?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.x.url}`);
-            }
-            if (item?.whatsapp?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.whatsapp.url}`);
-            }
-            if (item?.tiktok?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.tiktok.url}`);
-            }
-            if (item?.youtube?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.youtube.url}`);
+            // Entreprise
+            if (item.company) {
+                vCard.organization = item.company;
             }
 
-            // Email
-            if (item?.email) {
-                vCardLines.push(`EMAIL;INTERNET;TYPE=Email:${item?.email}`);
-            }
-
-            // Téléphones (formats différents)
-            if (item?.phoneNumber) {
-                vCardLines.push(`TEL;TYPE=Number:${item?.phoneNumber}`);
-                vCardLines.push(`TEL;TYPE=Téléphone:+${item?.phoneNumber}`);
+            if (item.profession) {
+                vCard.title = item.profession;
             }
 
             // Adresse
-            if (item?.address) {
-                vCardLines.push(`ADR;TYPE=Address;CHARSET=utf-8:;;${item?.address};;;;`);
+            if (item.address) {
+                vCard.workAddress.label = 'Adresse du bureau';
+                vCard.workAddress.street = item.address;
             }
 
-            // Champ personnalisé pour la date
-            vCardLines.push(`X-ABDATE;TYPE=Date connected via Boss:${new Date().toISOString().split('T')[0]}`);
+            // Site web
+            if (item.website?.url) {
+                vCard.workUrl = item.website.url;
+            }
 
-            // PHOTO en base64 (sans sauts de ligne!)
-            if (photoBase64) {
-                // IMPORTANT: pas de sauts de ligne dans les données base64
-                // Certaines applications limitent la taille, donc on peut tronquer si nécessaire
-                const maxBase64Length = 5000; // Ajustez selon vos besoins
-                const truncatedBase64 = photoBase64.substring(0, maxBase64Length);
+            // Réseaux sociaux
+            if (item.linkedin?.url) {
+                vCard.socialUrls['linkedIn'] = item.linkedin.url;
+            }
+
+            if (item.x?.url) {
+                vCard.socialUrls['twitter'] = item.x.url;
+            }
+
+            if (item.facebook?.url) {
+                vCard.socialUrls['facebook'] = item.facebook.url;
+            }
+
+            if (item.instagram?.url) {
+                vCard.socialUrls['instagram'] = item.instagram.url;
+            }
+
+            if (item.whatsapp?.url) {
+                vCard.socialUrls['whatsapp'] = item.whatsapp.url;
+            }
+
+            if (item.tiktok?.url) {
+                vCard.socialUrls['tiktok'] = item.tiktok.url;
+            }
+
+            if (item.youtube?.url) {
+                vCard.socialUrls['youtube'] = item.youtube.url;
+            }
+
+            // Notes/Bio
+            if (item.bio) {
+                vCard.note = item.bio;
+            }
+
+            // Photo de profil
+            if (item?.profilePicture?.url) {
+                try {
+                    vCard.photo.attachFromUrl(item?.profilePicture?.url, 'avif');
+                    const photoBase64 = await imageUrlToBase64(item.profilePicture.url);
+                    if (photoBase64) {
+                        // La bibliothèque vCards gère automatiquement l'encodage base64
+                    }
+                } catch (error) {
+                    console.warn('Impossible d\'ajouter la photo:', error);
+                }
+            }
+
+            // Logo 
+            if (item?.companyLogo?.url) {
+                vCard.photo.attachFromUrl(item?.companyLogo?.url, 'avif');
+                try {
+                    const photoBase64 = await imageUrlToBase64(item.companyLogo.url);
+                    if (photoBase64) {
+                        // La bibliothèque vCards gère automatiquement l'encodage base64
+                    }
+                } catch (error) {
+                    console.warn('Impossible d\'ajouter le logo:', error);
+                }
+            }
                 
-                vCardLines.push(`PHOTO;ENCODING=b;TYPE=JPEG:${truncatedBase64}`);
-            }
-
-            vCardLines.push('END:VCARD');
-
-            // Joindre avec des retours à la ligne Windows (\r\n) pour compatibilité
-            const vCardString = vCardLines.join('\r\n');
+            // Générer le fichier vCard
+            const vCardString = vCard.getFormattedString();
             
-            // Créer et télécharger le fichier
             const blob = new Blob([vCardString], { 
                 type: 'text/vcard;charset=utf-8'
             });
-            const url = URL.createObjectURL(blob);
             
+            console.log('vCard généré:', vCardString); // Pour debug
+
+            const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `${item?.name.replace(/[^a-zA-Z0-9]/g, '_')}.vcf`;
+            link.download = `${item.name.replace(/[^a-zA-Z0-9]/g, '_')}.vcf`;
             link.style.display = 'none';
             
             document.body.appendChild(link);
