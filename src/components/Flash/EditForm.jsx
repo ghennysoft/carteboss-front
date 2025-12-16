@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import NavBar from '../NavBar';
 import { ChevronLeft, Trash2 } from 'lucide-react';
+import { compressImage } from '../../utils/compress';
 
 const EditForm = () => {
     const {id} = useParams();
@@ -95,39 +96,22 @@ const EditForm = () => {
     const handleSubmit = async () => {
         setLoading(true)
 
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("profession", profession);
-        formData.append("company", company);
-        formData.append("bio", bio);
-        formData.append("phoneNumber", phoneNumber);
-        formData.append("email", email);
-        formData.append("address", address);
-        formData.append("websiteTitle", websiteTitle);
-        formData.append("websiteLink", websiteLink);
-        formData.append("facebookTitle", facebookTitle);
-        formData.append("facebookLink", facebookLink);
-        formData.append("whatsappTitle", whatsappTitle);
-        formData.append("whatsappLink", whatsappLink);
-        formData.append("instagramTitle", instagramTitle);
-        formData.append("instagramLink", instagramLink);
-        formData.append("linkedinTitle", linkedInTitle);
-        formData.append("linkedinLink", linkedInLink);
-        formData.append("xTitle", xTitle);
-        formData.append("xLink", xLink);
-        formData.append("tiktokTitle", tiktokTitle);
-        formData.append("tiktokLink", tiktokLink);
-        formData.append("youtubeTitle", youtubeTitle);
-        formData.append("youtubeLink", youtubeLink);
+        const formData = {
+            name , profession , company , bio , phoneNumber, email,
+            address, websiteTitle, websiteLink, facebookTitle,
+            facebookLink, whatsappTitle, whatsappLink, instagramTitle,
+            instagramLink, linkedInTitle, linkedInLink, xTitle,
+            xLink, tiktokTitle, tiktokLink, youtubeTitle, youtubeLink,
+        }
 
         try {
             const response = await axios.put(BASE_API_URL+"/api/post/"+id, formData)
-            console.log(response?.data);
             
             if(response?.data){
                 if(profile){
                     const profileData = new FormData();
-                    profileData.append('profilePicture', profile)
+                    const compressedFile = await compressImage(profile);
+                    profileData.append('profilePicture', compressedFile)
                     await axios.put(BASE_API_URL+"/api/post/picture/"+response?.data?._id, profileData)
                     .then(res => console.log(res))
                     .catch(err => console.log(err))
@@ -135,7 +119,8 @@ const EditForm = () => {
                 
                 if(cover){
                     const coverData = new FormData();
-                    coverData.append('coverPicture', cover)
+                    const compressedFile = await compressImage(cover);
+                    coverData.append('coverPicture', compressedFile)
                     await axios.put(BASE_API_URL+"/api/post/cover/"+response?.data?._id, coverData)
                     .then(res => console.log(res))
                     .catch(err => console.log(err))

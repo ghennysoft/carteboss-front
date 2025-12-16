@@ -30,11 +30,8 @@ const Detail = () => {
                     // Convertir en base64
                     const buffer = Buffer.from(response.data, 'binary');
                     photoBase64 = buffer.toString('base64');
-                    
-                    // Pour debug : vérifier la taille
-                    console.log('Taille base64:', photoBase64.length, 'caractères');
                 } catch (error) {
-                    console.warn('Impossible de charger la photo:', error);
+                    // console.warn('Impossible de charger la photo:', error);
                 }
             }
 
@@ -114,12 +111,7 @@ const Detail = () => {
 
             // PHOTO en base64 (sans sauts de ligne!)
             if (photoBase64) {
-                // IMPORTANT: pas de sauts de ligne dans les données base64
-                // Certaines applications limitent la taille, donc on peut tronquer si nécessaire
-                const maxBase64Length = 5000; // Ajustez selon vos besoins
-                const truncatedBase64 = photoBase64.substring(0, maxBase64Length);
-                
-                vCardLines.push(`PHOTO;ENCODING=b;TYPE=JPEG:${truncatedBase64}`);
+                vCardLines.push(`PHOTO;ENCODING=b;TYPE=JPEG:${photoBase64}`);
             }
 
             vCardLines.push('END:VCARD');
@@ -214,9 +206,6 @@ const Detail = () => {
                         <img src="/social/youtube.jpg" width={40} />
                         <Link target={"_blank"} to={item?.youtube?.url} style={{fontSize: "1.1rem"}}>{item?.youtube?.title ? item?.youtube?.title : "Youtube"}</Link>
                     </div>}
-                    {/* <div className='flex items-center gap-3 mb-2'>
-                        <small className='text-gray-300'>{detectPlatform()}</small>
-                    </div> */}
                 </div>
             </div>
         </div>
