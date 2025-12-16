@@ -97,8 +97,8 @@ const Detail = () => {
 
             // Téléphones (formats différents)
             if (item?.phoneNumber) {
-                vCardLines.push(`TEL;TYPE=Number:${item?.phoneNumber}`);
-                vCardLines.push(`TEL;TYPE=Téléphone:+${item?.phoneNumber}`);
+                // vCardLines.push(`TEL;TYPE=Number:${item?.phoneNumber}`);
+                vCardLines.push(`TEL;TYPE=Téléphone:${item?.phoneNumber}`);
             }
 
             // Adresse
