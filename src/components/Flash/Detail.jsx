@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
  import { BASE_API_URL } from '../../utils/constante';
 import { Buffer } from 'buffer'
 import api from '../../utils/axiosConfig';
+import axios from 'axios';
 
 const Detail = () => {
     const {id} = useParams();
@@ -20,10 +21,10 @@ const Detail = () => {
         try {
             let photoBase64 = null;
             // Convertir l'image en base64
-            if (item?.profilePicture?.url) {
+            if (item?.profile_picture) {
                 try {
                     // Utiliser axios pour récupérer l'image
-                    const response = await api.get(item.profilePicture.url, {
+                    const response = await axios.get(item.profile_picture, {
                         responseType: 'arraybuffer' 
                     });
                     
@@ -31,7 +32,7 @@ const Detail = () => {
                     const buffer = Buffer.from(response.data, 'binary');
                     photoBase64 = buffer.toString('base64');
                 } catch (error) {
-                    // console.warn('Impossible de charger la photo:', error);
+                    console.warn('Impossible de charger la photo:', error);
                 }
             }
 
@@ -44,10 +45,10 @@ const Detail = () => {
 
             // Nom - IMPORTANT: format "Nom;Prénom;;;" pour iOS
             const nameParts = item?.full_name?.split(' ');
-            const lastName = nameParts[nameParts?.length - 1] || '';
-            const firstName = nameParts?.slice(0, -1).join(' ') || item?.full_name;
+            const last_name = nameParts[nameParts?.length - 1] || '';
+            const first_name = nameParts?.slice(0, -1).join(' ') || item?.full_name;
             
-            vCardLines.push(`N;CHARSET=utf-8:${lastName};${firstName};;;`);
+            vCardLines.push(`N;CHARSET=utf-8:${last_name};${first_name};;;`);
             vCardLines.push(`FN;CHARSET=utf-8:${item?.full_name}`);
 
             // Titre et organisation
@@ -65,29 +66,29 @@ const Detail = () => {
             }
 
             // URLs - format spécifique comme votre exemple
-            if (item?.linkedin?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.linkedin.url}`);
+            if (item?.linkedin_link) {
+                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.linkedin_link}`);
             }
-            if (item?.website?.url) {
-                vCardLines.push(`URL;TYPE=Website:${item?.website.url}`);
+            if (item?.website_link) {
+                vCardLines.push(`URL;TYPE=Website:${item?.website_link}`);
             }
-            if (item?.facebook?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.facebook.url}`);
+            if (item?.facebook_link) {
+                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.facebook_link}`);
             }
-            if (item?.instagram?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.instagram.url}`);
+            if (item?.instagram_link) {
+                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.instagram_link}`);
             }
-            if (item?.x?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.x.url}`);
+            if (item?.x_link) {
+                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.x_link}`);
             }
-            if (item?.whatsapp?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.whatsapp.url}`);
+            if (item?.whatsapp_link) {
+                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.whatsapp_link}`);
             }
-            if (item?.tiktok?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.tiktok.url}`);
+            if (item?.tiktok_link) {
+                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.tiktok_link}`);
             }
-            if (item?.youtube?.url) {
-                vCardLines.push(`URL;TYPE=${item?.name}:${item?.youtube.url}`);
+            if (item?.youtube_link) {
+                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.youtube_link}`);
             }
 
             // Email
@@ -127,7 +128,7 @@ const Detail = () => {
             
             const link = document.createElement('a');
             link.href = url;
-            link.download = `${item?.name.replace(/[^a-zA-Z0-9]/g, '_')}.vcf`;
+            link.download = `${item?.full_name.replace(/[^a-zA-Z0-9]/g, '_')}.vcf`;
             link.style.display = 'none';
             
             document.body.appendChild(link);
@@ -178,33 +179,33 @@ const Detail = () => {
                         <img src="/social/placeholder.png" width={40} />
                         <Link to={item?.address} style={{fontSize: "1.1rem"}}>{item?.address}</Link>
                     </div>}
-                    {item?.facebook?.url && <div className='flex items-center gap-3 mb-5'>
+                    {item?.facebook_link && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/facebook.png" width={40} />
-                        <Link target={"_blank"} to={item?.facebook?.url} style={{fontSize: "1.1rem"}}>{item?.facebook?.title ? item?.facebook?.title : "Facebook"}</Link>
+                        <Link target={"_blank"} to={item?.facebook_link} style={{fontSize: "1.1rem"}}>{item?.facebook_title ? item?.facebook_title : "Facebook"}</Link>
                     </div>}
-                    {item?.whatsapp?.url && <div className='flex items-center gap-3 mb-5'>
+                    {item?.whatsapp_link && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/whatsapp.png" width={40} />
-                        <Link target={"_blank"} to={item?.whatsapp?.url} style={{fontSize: "1.1rem"}}>{item?.whatsapp?.title ? item?.whatsapp?.title : "Whatsapp"}</Link>
+                        <Link target={"_blank"} to={item?.whatsapp_link} style={{fontSize: "1.1rem"}}>{item?.whatsapp_title ? item?.whatsapp_title : "Whatsapp"}</Link>
                     </div>}
-                    {item?.instagram?.url && <div className='flex items-center gap-3 mb-5'>
+                    {item?.instagram_link && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/instagram.png" width={40} />
-                        <Link target={"_blank"} to={item?.instagram?.url} style={{fontSize: "1.1rem"}}>{item?.instagram?.title ? item?.instagram?.title : "Instagram"}</Link>
+                        <Link target={"_blank"} to={item?.instagram_link} style={{fontSize: "1.1rem"}}>{item?.instagram_title ? item?.instagram_title : "Instagram"}</Link>
                     </div>}
-                    {item?.linkedin?.url && <div className='flex items-center gap-3 mb-5'>
+                    {item?.linkedin_link && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/linkedin.jpg" width={40} />
-                        <Link target={"_blank"} to={item?.linkedin?.url} style={{fontSize: "1.1rem"}}>{item?.linkedin?.title ? item?.linkedin?.title : "Linkedin"}</Link>
+                        <Link target={"_blank"} to={item?.linkedin_link} style={{fontSize: "1.1rem"}}>{item?.linkedin_title ? item?.linkedin_title : "Linkedin"}</Link>
                     </div>}
-                    {item?.x?.url && <div className='flex items-center gap-3 mb-5'>
+                    {item?.x_link && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/x.jpg" width={40} />
-                        <Link target={"_blank"} to={item?.x?.url} style={{fontSize: "1.1rem"}}>{item?.x?.title ? item?.x?.title : "X"}</Link>
+                        <Link target={"_blank"} to={item?.x_link} style={{fontSize: "1.1rem"}}>{item?.x_title ? item?.x_title : "X"}</Link>
                     </div>}
-                    {item?.tiktok?.url && <div className='flex items-center gap-3 mb-5'>
+                    {item?.tiktok_link && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/tiktok.jpg" width={40} />
-                        <Link target={"_blank"} to={item?.tiktok?.url} style={{fontSize: "1.1rem"}}>{item?.tiktok?.title ? item?.tiktok?.title : "Tiktok"}</Link>
+                        <Link target={"_blank"} to={item?.tiktok_link} style={{fontSize: "1.1rem"}}>{item?.tiktok_title ? item?.tiktok_title : "Tiktok"}</Link>
                     </div>}
-                    {item?.youtube?.url && <div className='flex items-center gap-3 mb-5'>
+                    {item?.youtube_link && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/youtube.jpg" width={40} />
-                        <Link target={"_blank"} to={item?.youtube?.url} style={{fontSize: "1.1rem"}}>{item?.youtube?.title ? item?.youtube?.title : "Youtube"}</Link>
+                        <Link target={"_blank"} to={item?.youtube_link} style={{fontSize: "1.1rem"}}>{item?.youtube_title ? item?.youtube_title : "Youtube"}</Link>
                     </div>}
                 </div>
             </div>

@@ -8,13 +8,13 @@ const QRCodeView = ({item, open}) => {
 
   // S'assurer que l'image est chargée avant la capture
   useEffect(() => {
-    if (item?.qrCode?.url) {
+    if (item?.qr_code) {
       const img = new Image();
       img.onload = () => setImageLoaded(true);
       img.onerror = () => console.error("Erreur de chargement de l'image QR");
-      img.src = item.qrCode.url;
+      img.src = item?.qr_code;
     }
-  }, [item?.qrCode?.url]);
+  }, [item?.qr_code]);
 
   const handleDownloadImage = async () => {
     if (componentRef.current && imageLoaded) {
@@ -63,9 +63,9 @@ const QRCodeView = ({item, open}) => {
         >{imageLoaded ? 'Télécharger' : 'Chargement...'}</button> */}
         <div ref={componentRef} className="relative flex flex-col border border-[#26265eff] border-3 rounded-lg overflow-hidden">
             {/* <img src={"/no-img.jpg"} width={200} height={200} alt="qrcode" /> */}
-            {item?.qrCode?.url && (
+            {item?.qr_code && (
               <img 
-                src={item.qrCode.url} 
+                src={item?.qr_code} 
                 className='w-full' 
                 alt="qrcode" 
                 // crossOrigin="anonymous" // Important pour CORS

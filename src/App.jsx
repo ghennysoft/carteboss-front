@@ -21,7 +21,7 @@ function App() {
             <Route path='/auth/register' element={<Register />} />       
           </>
         }
-        <Route path='/carte/:id' element={<Detail />} />
+        <Route path='/card/:id' element={<Detail />} />
         <Route element={<PrivateRoute />} >
           <Route path='*' element={<Navigate to='/dashboard' />} />
           <Route path='/dashboard' index element={<Flash />} />
