@@ -4,7 +4,7 @@ const NavBar = () => {
   return (
     <>
         <nav className="flex justify-between items-center">
-            <Link to={"/"}><img src="/logo.png" width={100} alt="logo ghenny" /></Link>
+            {/* <Link to={"/"}><img src="/logo.png" width={100} alt="logo ghenny" /></Link> */}
             <p>
                 {/* <span>Medi King's, </span> */}
                 <span>

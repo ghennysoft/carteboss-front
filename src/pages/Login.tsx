@@ -37,14 +37,14 @@ const Login = () => {
     setLoading(true)
     setMessage('')
     try {
-      const response = await axios.post(BASE_API_URL+"/api/auth/login", {
-        data: data.phone, 
+      const resp = await axios.post(BASE_API_URL+"/api/auth/login/", {
+        email: data.phone, 
         password: data.password
       })
       
-      localStorage.setItem('user', response.data.profile)
-      localStorage.setItem('token', response.data.token)
-      localStorage.setItem('refreshToken', response.data.refreshToken)
+      localStorage.setItem('user', JSON.stringify(resp?.data?.user));
+      localStorage.setItem('access', resp?.data?.access);
+      localStorage.setItem('refresh', resp?.data?.refresh);
 
       setLoading(false)
       setMessage('')
@@ -60,7 +60,7 @@ const Login = () => {
       <div className="shadow-xl bg-white my-5 mx-auto sm:w-[25rem]">
         <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
           <div className="w-full sm:mx-auto sm:w-full sm:max-w-sm">
-            <img src="/logo.png" width={200} alt="logo la carte boss" className="mx-auto" />
+            {/* <img src="/logo.png" width={200} alt="logo la carte boss" className="mx-auto" /> */}
             {/* <h3 className="mt-3 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Connectez-vous</h3> */}
           </div>
           <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">

@@ -1,15 +1,15 @@
 import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { BASE_API_URL } from '../../utils/constante';
+ import { BASE_API_URL } from '../../utils/constante';
 import { Buffer } from 'buffer'
+import api from '../../utils/axiosConfig';
 
 const Detail = () => {
     const {id} = useParams();
     const [item, setItem] = useState();
     useEffect(()=>{
         const getPost = async ()=>{
-            const response = await axios.get(BASE_API_URL+"/api/post/"+id)
+            const response = await api.get(BASE_API_URL+"/api/cards/"+id)
             setItem(response.data);
             return response.data;
         }
@@ -23,7 +23,7 @@ const Detail = () => {
             if (item?.profilePicture?.url) {
                 try {
                     // Utiliser axios pour récupérer l'image
-                    const response = await axios.get(item.profilePicture.url, {
+                    const response = await api.get(item.profilePicture.url, {
                         responseType: 'arraybuffer' 
                     });
                     
@@ -43,12 +43,12 @@ const Detail = () => {
             ];
 
             // Nom - IMPORTANT: format "Nom;Prénom;;;" pour iOS
-            const nameParts = item?.name?.split(' ');
+            const nameParts = item?.full_name?.split(' ');
             const lastName = nameParts[nameParts?.length - 1] || '';
-            const firstName = nameParts?.slice(0, -1).join(' ') || item?.name;
+            const firstName = nameParts?.slice(0, -1).join(' ') || item?.full_name;
             
             vCardLines.push(`N;CHARSET=utf-8:${lastName};${firstName};;;`);
-            vCardLines.push(`FN;CHARSET=utf-8:${item?.name}`);
+            vCardLines.push(`FN;CHARSET=utf-8:${item?.full_name}`);
 
             // Titre et organisation
             if (item?.profession) {
@@ -96,9 +96,9 @@ const Detail = () => {
             }
 
             // Téléphones (formats différents)
-            if (item?.phoneNumber) {
-                // vCardLines.push(`TEL;TYPE=Number:${item?.phoneNumber}`);
-                vCardLines.push(`TEL;TYPE=Téléphone:${item?.phoneNumber}`);
+            if (item?.phone_number) {
+                // vCardLines.push(`TEL;TYPE=Number:${item?.phone_number}`);
+                vCardLines.push(`TEL;TYPE=Téléphone:${item?.phone_number}`);
             }
 
             // Adresse
@@ -150,12 +150,12 @@ const Detail = () => {
   return (
     <div className="container p-5 lg:max-w-3/5 mx-auto">
         <div>
-            <img src={item?.coverPicture?.url ? item?.coverPicture?.url : "/no-banner.png"} style={{objectFit: 'cover', width: '100%', height: '230px'}} alt="" />
-            <img src={item?.profilePicture?.url ? item?.profilePicture?.url : "/no-img.jpg"} style={{ width: '150px', height: '150px', objectFit: 'cover', border: '2px solid #ddd', borderRadius: '50%', margin: '-80px 30px 0px'}} alt="" />
-            {item?.companyLogo?.url && <img src={item?.companyLogo?.url ? item?.companyLogo?.url : "/no-img.jpg"} className='border' style={{ width: '56px', height: '56px', objectFit: 'cover', border: '3px solid #ddd', borderRadius: '50%', margin: '-65px 0px 0px 140px'}} alt="" />}
+            <img src={item?.cover_picture ? item?.cover_picture : "/no-banner.png"} style={{objectFit: 'cover', width: '100%', height: '230px'}} alt="" />
+            <img src={item?.profile_picture ? item?.profile_picture : "/no-img.jpg"} style={{ width: '150px', height: '150px', objectFit: 'cover', border: '2px solid #ddd', borderRadius: '50%', margin: '-80px 30px 0px'}} alt="" />
+            {item?.company_logo && <img src={item?.company_logo ? item?.company_logo : "/no-img.jpg"} className='border' style={{ width: '56px', height: '56px', objectFit: 'cover', border: '3px solid #ddd', borderRadius: '50%', margin: '-65px 0px 0px 140px'}} alt="" />}
             <div className="content">
                 <div className="infos ml-4 mt-3">
-                    <div className='flex items-center gap-3 mb-2' style={{fontSize: "2rem"}}><b>{item?.name}</b></div>
+                    <div className='flex items-center gap-3 mb-2' style={{fontSize: "2rem"}}><b>{item?.full_name}</b></div>
                     <div className='flex items-center gap-3 mb-2' style={{fontSize: "1.3rem"}}><b>{item?.profession}</b></div>
                     <div className='flex items-center gap-3 mb-2' style={{fontSize: "1.3rem"}}><b>{item?.company}</b></div>
                     <div className='flex items-center gap-3 mb-2' style={{fontSize: "1.1rem"}}>{item?.bio}</div>
@@ -166,9 +166,9 @@ const Detail = () => {
                     style={{display: 'inline-block', borderRadius: '30px'}}
                 >Enregistrer le contact</button>
                 <div className="social ml-4">
-                    {item?.phoneNumber && <div className='flex items-center gap-3 mb-5'>
+                    {item?.phone_number && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/phone.jpg" width={40} />
-                        <a href={`tel:${item?.phoneNumber}`} style={{fontSize: "1.1rem"}}>{item?.phoneNumber}</a>
+                        <a href={`tel:${item?.phone_number}`} style={{fontSize: "1.1rem"}}>{item?.phone_number}</a>
                     </div>}
                     {item?.email && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/gmail.png" width={40} />

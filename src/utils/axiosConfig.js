@@ -7,7 +7,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -28,8 +28,8 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
-        const response = await axios.post('http://localhost:5000/api/auth/refresh', { refreshToken });
+        const refreshToken = localStorage.getItem('refresh');
+        const response = await axios.post('http://127.0.0.1:8000/api/auth/refresh', { refreshToken });
         
         if(response.data.token) {
           const newToken = response.data.token;

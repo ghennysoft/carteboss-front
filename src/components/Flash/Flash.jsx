@@ -1,21 +1,19 @@
-import { data } from '../../utils/data'
 import { Link, useNavigate } from 'react-router-dom'
 import { ChevronLeft, Edit2, QrCode, Share } from 'lucide-react'
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { BASE_API_URL } from '../../utils/constante';
 import NavBar from '../NavBar';
 import QRCodeView from '../QRCodeView';
 import CardItem from './CardItem';
+import api from '../../utils/axiosConfig';
 
 const Flash = () => {
   const navigate = useNavigate();
-  const [viewQRCode, setViewQRCode] = useState(false);
   const [data, setData] = useState([]);
   useEffect(()=>{
     const getPosts = async ()=>{
         try {
-            const response = await axios.get(BASE_API_URL+"/api/post/all")
+            const response = await api.get(BASE_API_URL+"/api/cards/")
             setData(response.data);
             return response.data;
         } catch (error) {
@@ -24,6 +22,11 @@ const Flash = () => {
     }
     getPosts();
   }, [])
+  console.log(data)
+
+  if(!data){
+    return;
+  }
 
   return (
     <div className="container p-5 lg:max-w-3/5 mx-auto">
@@ -48,7 +51,7 @@ const Flash = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2">
             {
                 data?.map((item) => (
-                    <CardItem key={item?._id} item={item} />
+                    <CardItem key={item?.id} item={item} />
                 ))
             }
         </div>

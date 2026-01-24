@@ -9,7 +9,7 @@ import Register from './pages/Register';
 import EditForm from './components/Flash/EditForm';
 
 function App() {
-  const user = localStorage.getItem('token');
+  const user = localStorage.getItem('access');
   return (
     <BrowserRouter>
       <Routes>
