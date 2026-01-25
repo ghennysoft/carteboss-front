@@ -19,10 +19,14 @@ function App() {
             <Route path='*' element={<Navigate to='/' />} />
             <Route path='/' element={<Login />} />
             <Route path='/auth/register' element={<Register />} />       
+            <Route path='/card/:id' element={<Detail />} />
           </>
         }
+
         <Route path='/card/:id' element={<Detail />} />
+
         <Route element={<PrivateRoute />} >
+          <Route path='/card/:id' element={<Detail />} />
           <Route path='*' element={<Navigate to='/dashboard' />} />
           <Route path='/dashboard' index element={<Flash />} />
           <Route path='/form' element={<Form />} />
