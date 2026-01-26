@@ -1,9 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { ChevronLeft, Edit2, QrCode, Share } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ChevronLeft } from 'lucide-react'
 import { useEffect, useState } from 'react';
 import { BASE_API_URL } from '../../utils/constante';
 import NavBar from '../NavBar';
-import QRCodeView from '../QRCodeView';
 import CardItem from './CardItem';
 import api from '../../utils/axiosConfig';
 

@@ -60,8 +60,8 @@ const Login = () => {
       <div className="shadow-xl bg-white my-5 mx-auto sm:w-[25rem]">
         <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
           <div className="w-full sm:mx-auto sm:w-full sm:max-w-sm">
-            {/* <img src="/logo.png" width={200} alt="logo la carte boss" className="mx-auto" /> */}
-            {/* <h3 className="mt-3 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Connectez-vous</h3> */}
+            <img src="/logo.png" width={200} alt="logo la carte boss" className="mx-auto" />
+            <h3 className="mt-3 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Connectez-vous</h3>
           </div>
           <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -88,11 +88,6 @@ const Login = () => {
 
               <div>
                 <div className="flex items-center justify-between">
-                  <div className="text-sm">
-                    {/* <Link to={"/auth/find_user"} className="font-semibold text-indigo-600 hover:text-indigo-500">
-                      Oublié ?
-                    </Link> */}
-                  </div>
                 </div>
                 <div className="relative block mb-5 bg-gray-300 py-3 px-4 rounded-full focus:outline-0">
                   <input 
@@ -123,12 +118,6 @@ const Login = () => {
                       Se connecter
                     </button>
                 }
-              </div>
-              <hr className="border-gray-400 my-5" />
-              <div>
-                <Link to={"/auth/register"} className="flex w-full justify-center border border-[#26265eff] bg-white text-[#26265eff] py-3 px-4 rounded-full focus:outline-0">
-                  Créer un compte
-                </Link>
               </div>
             </form>
           </div>

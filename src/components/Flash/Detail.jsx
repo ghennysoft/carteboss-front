@@ -2,7 +2,6 @@ import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react';
  import { BASE_API_URL } from '../../utils/constante';
 import { Buffer } from 'buffer'
-import api from '../../utils/axiosConfig';
 import axios from 'axios';
 
 const Detail = () => {
@@ -10,7 +9,7 @@ const Detail = () => {
     const [item, setItem] = useState();
     useEffect(()=>{
         const getPost = async ()=>{
-            const response = await api.get(BASE_API_URL+"/api/cards/"+id)
+            const response = await axios.get(BASE_API_URL+"/api/cards/"+id)
             setItem(response.data);
             return response.data;
         }

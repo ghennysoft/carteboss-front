@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import NavBar from '../NavBar';
 import { ChevronLeft, Trash2 } from 'lucide-react';
-import { compressImage } from '../../utils/compress';
+import api from '../../utils/axiosConfig';
 
 const EditForm = () => {
     const {id} = useParams();
@@ -18,39 +18,37 @@ const EditForm = () => {
     const profileRef = useRef();
     const logoRef = useRef();
 
-    // États pour les images (fichiers)
+    // États pour les données du formulaire
     const [profile, setProfile] = useState(null);
     const [cover, setCover] = useState(null);
     const [logo, setLogo] = useState(null);
-
-    // États pour les données du formulaire
-    const [name, setName] = useState('');
-    const [profession, setProfession] = useState('');
-    const [company, setCompany] = useState('');
-    const [bio, setBio] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [email, setEmail] = useState('');
-    const [address, setAddress] = useState('');
-    const [websiteTitle, setWebsiteTitle] = useState('');
-    const [websiteLink, setWebsiteLink] = useState('');
-    const [facebookTitle, setFacebookTitle] = useState('');
-    const [facebookLink, setFacebookLink] = useState('');
-    const [whatsappTitle, setWhatsappTitle] = useState('');
-    const [whatsappLink, setWhatsappLink] = useState('');
-    const [instagramTitle, setInstagramTitle] = useState('');
-    const [instagramLink, setInstagramLink] = useState('');
-    const [linkedInTitle, setLinkedInTitle] = useState('');
-    const [linkedInLink, setLinkedInLink] = useState('');
-    const [xTitle, setXTitle] = useState('');
-    const [xLink, setXLink] = useState('');
-    const [tiktokTitle, setTiktokTitle] = useState('');
-    const [tiktokLink, setTiktokLink] = useState('');
-    const [youtubeTitle, setYoutubeTitle] = useState('');
-    const [youtubeLink, setYoutubeLink] = useState('');
+    const [name, setName] = useState("");
+    const [profession, setProfession] = useState("");
+    const [company, setCompany] = useState("");
+    const [bio, setBio] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [email, setEmail] = useState("");
+    const [address, setAddress] = useState("");
+    const [websiteTitle, setWebsiteTitle] = useState("");
+    const [websiteLink, setWebsiteLink] = useState("");
+    const [facebookTitle, setFacebookTitle] = useState("");
+    const [facebookLink, setFacebookLink] = useState("");
+    const [whatsappTitle, setWhatsappTitle] = useState("");
+    const [whatsappLink, setWhatsappLink] = useState("");
+    const [instagramTitle, setInstagramTitle] = useState("");
+    const [instagramLink, setInstagramLink] = useState("");
+    const [linkedInTitle, setLinkedInTitle] = useState("");
+    const [linkedInLink, setLinkedInLink] = useState("");
+    const [xTitle, setXTitle] = useState("");
+    const [xLink, setXLink] = useState("");
+    const [tiktokTitle, setTiktokTitle] = useState("");
+    const [tiktokLink, setTiktokLink] = useState("");
+    const [youtubeTitle, setYoutubeTitle] = useState("");
+    const [youtubeLink, setYoutubeLink] = useState("");
 
     useEffect(() => {
         const getPost = async () => {
-            const response = await axios.get(BASE_API_URL + "/api/post/" + id);
+            const response = await axios.get(BASE_API_URL + "/api/cards/" + id);
             setData(response.data);
             return response.data;
         }
@@ -60,29 +58,29 @@ const EditForm = () => {
     // Mettre à jour les états quand les données sont chargées
     useEffect(() => {
         if (data && Object.keys(data).length > 0) {
-            setName(data.name || '');
+            setName(data.full_name || '');
             setProfession(data.profession || '');
             setCompany(data.company || '');
             setBio(data.bio || '');
-            setPhoneNumber(data.phoneNumber || '');
+            setPhoneNumber(data.phone_number || '');
             setEmail(data.email || '');
             setAddress(data.address || '');
-            setWebsiteTitle(data.website?.title || '');
-            setWebsiteLink(data.website?.url || '');
-            setFacebookTitle(data.facebook?.title || '');
-            setFacebookLink(data.facebook?.url || '');
-            setWhatsappTitle(data.whatsapp?.title || '');
-            setWhatsappLink(data.whatsapp?.url || '');
-            setInstagramTitle(data.instagram?.title || '');
-            setInstagramLink(data.instagram?.url || '');
-            setLinkedInTitle(data.linkedin?.title || '');
-            setLinkedInLink(data.linkedin?.url || '');
-            setXTitle(data.x?.title || '');
-            setXLink(data.x?.url || '');
-            setTiktokTitle(data.tiktok?.title || '');
-            setTiktokLink(data.tiktok?.url || '');
-            setYoutubeTitle(data.youtube?.title || '');
-            setYoutubeLink(data.youtube?.url || '');
+            setWebsiteTitle(data.website_title || '');
+            setWebsiteLink(data.website_link || '');
+            setFacebookTitle(data.facebook_title || '');
+            setFacebookLink(data.facebook_link || '');
+            setWhatsappTitle(data.whatsapp_title || '');
+            setWhatsappLink(data.whatsapp_link || '');
+            setInstagramTitle(data.instagram_title || '');
+            setInstagramLink(data.instagram_link || '');
+            setLinkedInTitle(data.linkedin_title || '');
+            setLinkedInLink(data.linkedin_link || '');
+            setXTitle(data.x_title || '');
+            setXLink(data.x_link || '');
+            setTiktokTitle(data.tiktok_title || '');
+            setTiktokLink(data.tiktok_link || '');
+            setYoutubeTitle(data.youtube_title || '');
+            setYoutubeLink(data.youtube_link || '');
         }
     }, [data]); // Ce useEffect s'exécute quand data change
 
@@ -96,37 +94,48 @@ const EditForm = () => {
     const handleSubmit = async () => {
         setLoading(true)
 
-        const formData = {
-            name , profession , company , bio , phoneNumber, email,
-            address, websiteTitle, websiteLink, facebookTitle,
-            facebookLink, whatsappTitle, whatsappLink, instagramTitle,
-            instagramLink, linkedInTitle, linkedInLink, xTitle,
-            xLink, tiktokTitle, tiktokLink, youtubeTitle, youtubeLink,
+        const formData = new FormData();
+        formData.append('card_id', data?.card_id);
+        formData.append('full_name', name);
+        formData.append('profession', profession);
+        formData.append('company', company);
+        formData.append('bio', bio);
+        formData.append('phone_number', phoneNumber);
+        formData.append('email', email);
+        formData.append('address', address);
+        formData.append('website_title', websiteTitle);
+        formData.append('website_link', websiteLink);
+        formData.append('facebook_title', facebookTitle);
+        formData.append('facebook_link', facebookLink);
+        formData.append('whatsapp_title', whatsappTitle);
+        formData.append('whatsapp_link', whatsappLink);
+        formData.append('instagram_title', instagramTitle);
+        formData.append('instagram_link', instagramLink);
+        formData.append('linkedin_title', linkedInTitle);
+        formData.append('linkedin_link', linkedInLink);
+        formData.append('x_title', xTitle);
+        formData.append('x_link', xLink);
+        formData.append('tiktok_title', tiktokTitle);
+        formData.append('tiktok_link', tiktokLink);
+        formData.append('youtube_title', youtubeTitle);
+        formData.append('youtube_link', youtubeLink);
+
+        if(profile){
+            // const compressedProfile = await compressImage(profile);
+            formData.append('profile_picture', profile);
+        }
+        if(cover){
+            // const compressedCover = await compressImage(cover);
+            formData.append('cover_picture', cover);
+        }
+        if(logo){
+            // const compressedLogo = await compressImage(logo);
+            formData.append('company_logo', logo);
         }
 
         try {
-            const response = await axios.put(BASE_API_URL+"/api/post/"+id, formData)
+            await api.put(BASE_API_URL+"/api/cards/edit/"+id+"/", formData)
             
-            if(response?.data){
-                if(profile){
-                    const profileData = new FormData();
-                    const compressedFile = await compressImage(profile);
-                    profileData.append('profilePicture', compressedFile)
-                    await axios.put(BASE_API_URL+"/api/post/picture/"+response?.data?._id, profileData)
-                    .then(res => console.log(res))
-                    .catch(err => console.log(err))
-                }
-                
-                if(cover){
-                    const coverData = new FormData();
-                    const compressedFile = await compressImage(cover);
-                    coverData.append('coverPicture', compressedFile)
-                    await axios.put(BASE_API_URL+"/api/post/cover/"+response?.data?._id, coverData)
-                    .then(res => console.log(res))
-                    .catch(err => console.log(err))
-                }
-            }
-
             setLoading(false)
             navigate('/dashboard')
         } catch (err) {
@@ -135,16 +144,16 @@ const EditForm = () => {
         }   
     }
 
-    const handleDelete = async () => {
-        try {
-            const response = await axios.put(BASE_API_URL+"/api/post/delete/"+id)
-            console.log(response?.data);
-            navigate('/dashboard')
-        } catch (err) {
-            console.log(err);
-            setLoading(false)
-        }   
-    }
+    // const handleDelete = async () => {
+    //     try {
+    //         const response = await axios.put(BASE_API_URL+"/api/post/delete/"+id)
+    //         console.log(response?.data);
+    //         navigate('/dashboard')
+    //     } catch (err) {
+    //         console.log(err);
+    //         setLoading(false)
+    //     }   
+    // }
 
     return (
         <>
@@ -161,12 +170,12 @@ const EditForm = () => {
                             />
                             <h2 className='font-medium text-xl'>Modifier la carte</h2>
                         </div>
-                        <button onClick={handleDelete} className='flex items-center bg-red-800 text-white rounded-lg p-3 cursor-pointer'> <Trash2 size={15} /> <small>Supprimer la carte</small></button>
+                        {/* <button onClick={handleDelete} className='flex items-center bg-red-800 text-white rounded-lg p-3 cursor-pointer'> <Trash2 size={15} /> <small>Supprimer la carte</small></button> */}
                     </div>
                     {/* <form  > */}
                         {/* Images */}
                         <div className="relative">
-                            <img src={getImageUrl(cover, data.coverPicture?.url)} className='border' style={{objectFit: 'cover', width: '100%', height: '200px'}} alt="" />
+                            <img src={getImageUrl(cover, data.cover_picture)} className='border' style={{objectFit: 'cover', width: '100%', height: '200px'}} alt="" />
                             <div className="flex justify-center items-center p-1 border border-gray-300 rounded-full bg-white absolute right-5 top-3 cursor-pointer" onClick={() => {coverRef.current.click()}}>
                                 <BsCamera />
                             </div>
@@ -175,7 +184,7 @@ const EditForm = () => {
                             </div>
                         </div>
                         <div className="relative"  style={{ width: '140px', height: '140px', margin: '-50px 10px 0px'}}>
-                            <img src={getImageUrl(profile, data.profilePicture?.url)} className='border' style={{ width: '140px', height: '140px', objectFit: 'cover', border: '5px solid #ddd', borderRadius: '50%', margin: '-40px 10px 0px'}} alt="" />
+                            <img src={getImageUrl(profile, data.profile_picture)} className='border' style={{ width: '140px', height: '140px', objectFit: 'cover', border: '5px solid #ddd', borderRadius: '50%', margin: '-40px 10px 0px'}} alt="" />
                             <div className="flex justify-center items-center p-1 border rounded-full bg-white absolute right-0 bottom-0 cursor-pointer" onClick={() => {profileRef.current.click()}}>
                                 <BsCamera />
                             </div>
@@ -184,7 +193,7 @@ const EditForm = () => {
                             </div>
                         </div>
                         <div className="relative"  style={{ width: '65px', height: '65px', margin: '-90px 0px 0px 120px'}}>
-                            <img src={getImageUrl(logo, data.companyLogo?.url)} className='border' style={{ width: '65px', height: '65px', objectFit: 'cover', border: '3px solid #ddd', borderRadius: '50%', margin: '-40px 10px 0px'}} alt="" />
+                            <img src={getImageUrl(logo, data.company_logo)} className='border' style={{ width: '65px', height: '65px', objectFit: 'cover', border: '3px solid #ddd', borderRadius: '50%', margin: '-40px 10px 0px'}} alt="" />
                             <div className="flex justify-center items-center p-1 border border-gray-400 rounded-full bg-white absolute -right-2 bottom-0 cursor-pointer" onClick={() => {logoRef.current.click()}}>
                                 <BsCamera size={10} />
                             </div>
@@ -376,7 +385,7 @@ const EditForm = () => {
                                 onClick={handleSubmit}
                                 className='block lg:mt-4 mb-5 bg-gray-700 hover:bg-gray-900 text-white lg:py-3 py-2 px-4 rounded-full w-72 cursor-pointer'
                             >
-                                Enregistrer 
+                                Modifier 
                             </button>
                             : <button 
                                 type='button'

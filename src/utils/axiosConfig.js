@@ -29,7 +29,7 @@ api.interceptors.response.use(
       
       try {
         const refreshToken = localStorage.getItem('refresh');
-        const response = await axios.post('http://127.0.0.1:8000/api/auth/refresh', { refreshToken });
+        const response = await axios.post(`${BASE_API_URL}/api/auth/refresh`, { refreshToken });
         
         if(response.data.token) {
           const newToken = response.data.token;
@@ -47,8 +47,8 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
         window.location = '/login';
       }
     }

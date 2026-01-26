@@ -4,7 +4,6 @@ import { BASE_API_URL } from '../../utils/constante';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import NavBar from '../NavBar';
-import Logo from './logo.png';
 import { ChevronLeft } from 'lucide-react';
 // import { compressImage } from '../../utils/compress';
 import api from '../../utils/axiosConfig';
