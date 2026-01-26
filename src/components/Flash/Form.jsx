@@ -112,7 +112,7 @@ const Form = () => {
             if(response?.data){
                 // Générer le QR code en tant que Data URL
                 const qrDataURL = await QRCode.toDataURL(
-                    `${BASE_API_URL}/card/${card_id}`, // Utilisez votre URL de production
+                    `https://card.lacarteboss.com/card/${card_id}`, // Utilisez votre URL de production
                     // `https://127.0.0.1:8000/card/${card_id}`, // Utilisez votre URL de production
                     {
                         width: 400,
@@ -134,9 +134,9 @@ const Form = () => {
                 qrCodeData.append('profession', profession);
                 qrCodeData.append('phone_number', phoneNumber);
                 qrCodeData.append('qr_code', qrCodeFile)
-                qrCodeData.append('qr_data', `${BASE_API_URL}/card/${card_id}`)
+                qrCodeData.append('qr_data', `https://card.lacarteboss.com/card/${card_id}`)
 
-                await api.put("/api/cards/edit/"+card_id+"/", qrCodeData)
+                await api.put("/api/cards/"+card_id+"/", qrCodeData)
             }
 
             setLoading(false)
