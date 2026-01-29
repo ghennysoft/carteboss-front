@@ -27,6 +27,7 @@ const EditForm = () => {
     const [company, setCompany] = useState("");
     const [bio, setBio] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneNumber2, setPhoneNumber2] = useState("");
     const [email, setEmail] = useState("");
     const [address, setAddress] = useState("");
     const [websiteTitle, setWebsiteTitle] = useState("");
@@ -45,6 +46,8 @@ const EditForm = () => {
     const [tiktokLink, setTiktokLink] = useState("");
     const [youtubeTitle, setYoutubeTitle] = useState("");
     const [youtubeLink, setYoutubeLink] = useState("");
+    const [telegramTitle, setTelegramTitle] = useState("");
+    const [telegramLink, setTelegramLink] = useState("");
 
     useEffect(() => {
         const getPost = async () => {
@@ -63,6 +66,7 @@ const EditForm = () => {
             setCompany(data.company || '');
             setBio(data.bio || '');
             setPhoneNumber(data.phone_number || '');
+            setPhoneNumber2(data.phone_number2 || '');
             setEmail(data.email || '');
             setAddress(data.address || '');
             setWebsiteTitle(data.website_title || '');
@@ -81,6 +85,8 @@ const EditForm = () => {
             setTiktokLink(data.tiktok_link || '');
             setYoutubeTitle(data.youtube_title || '');
             setYoutubeLink(data.youtube_link || '');
+            setTelegramTitle(data.telegram_title || '');
+            setTelegramLink(data.telegram_link || '');
         }
     }, [data]); // Ce useEffect s'exécute quand data change
 
@@ -101,6 +107,7 @@ const EditForm = () => {
         formData.append('company', company);
         formData.append('bio', bio);
         formData.append('phone_number', phoneNumber);
+        formData.append('phone_number2', phoneNumber2);
         formData.append('email', email);
         formData.append('address', address);
         formData.append('website_title', websiteTitle);
@@ -119,6 +126,8 @@ const EditForm = () => {
         formData.append('tiktok_link', tiktokLink);
         formData.append('youtube_title', youtubeTitle);
         formData.append('youtube_link', youtubeLink);
+        formData.append('telegram_title', telegramTitle);
+        formData.append('telegram_link', telegramLink);
 
         if(profile){
             // const compressedProfile = await compressImage(profile);
@@ -208,21 +217,21 @@ const EditForm = () => {
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setName(e.target.value)} 
                                 value={name}
-                                placeholder='Nom' 
+                                placeholder='Nom*' 
                                 required
                             />
                             <input type="text" name="profession" id="profession"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setProfession(e.target.value)}
                                 value={profession}
-                                placeholder='Titre du travail'  
+                                placeholder='Titre du travail*'  
                                 required
                             />
                             <input type="text" name="company" id="company"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setCompany(e.target.value)}
                                 value={company}
-                                placeholder='company' 
+                                placeholder='Company*' 
                             />
                         </div>
                         <textarea name="bio" id="bio" rows={5}
@@ -234,12 +243,18 @@ const EditForm = () => {
                         </textarea>
 
                         <p className='text-lg mt-5 p-2'><b>Contacts</b></p>
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <input type="text" name="phoneNumber" id="phoneNumber"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setPhoneNumber(e.target.value)}
                                 value={phoneNumber}
-                                placeholder='Numéro de téléphone' 
+                                placeholder='Numéro de téléphone*' 
+                            />
+                            <input type="text" name="phoneNumber2" id="phoneNumber2"
+                                className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
+                                onChange={(e)=>setPhoneNumber2(e.target.value)}
+                                value={phoneNumber2}
+                                placeholder='Numéro de téléphone2' 
                             />
                             <input type="email" name="email" id="email"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
@@ -374,6 +389,21 @@ const EditForm = () => {
                                     className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
                                     onChange={(e)=>setYoutubeLink(e.target.value)}
                                     value={youtubeLink}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                            <div className="telegram">
+                                <p className='text-lg mt-5 p-2'><b>Telegram</b></p>                
+                                <input type="text" name="telegramTitle" id="telegramTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
+                                    onChange={(e)=>setTelegramTitle(e.target.value)}
+                                    value={telegramTitle}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="telegramLink" id="telegramLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full w-full focus:outline-0'
+                                    onChange={(e)=>setTelegramLink(e.target.value)}
+                                    value={telegramLink}
                                     placeholder='Lien' 
                                 />
                             </div>
