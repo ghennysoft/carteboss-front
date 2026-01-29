@@ -72,22 +72,25 @@ const Detail = () => {
                 vCardLines.push(`URL;TYPE=Website:${item?.website_link}`);
             }
             if (item?.facebook_link) {
-                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.facebook_link}`);
+                vCardLines.push(`URL;TYPE=${item?.facebook_title}:${item?.facebook_link}`);
             }
             if (item?.instagram_link) {
-                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.instagram_link}`);
+                vCardLines.push(`URL;TYPE=${item?.instagram_title}:${item?.instagram_link}`);
             }
             if (item?.x_link) {
-                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.x_link}`);
+                vCardLines.push(`URL;TYPE=${item?.x_title}:${item?.x_link}`);
             }
             if (item?.whatsapp_link) {
-                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.whatsapp_link}`);
+                vCardLines.push(`URL;TYPE=${item?.whatsapp_title}:${item?.whatsapp_link}`);
             }
             if (item?.tiktok_link) {
-                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.tiktok_link}`);
+                vCardLines.push(`URL;TYPE=${item?.tiktok_title}:${item?.tiktok_link}`);
             }
             if (item?.youtube_link) {
-                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.youtube_link}`);
+                vCardLines.push(`URL;TYPE=${item?.youtube_title}:${item?.youtube_link}`);
+            }
+            if (item?.telegram_link) {
+                vCardLines.push(`URL;TYPE=${item?.telegram_title}:${item?.telegram_link}`);
             }
 
             // Email
@@ -97,8 +100,10 @@ const Detail = () => {
 
             // Téléphones (formats différents)
             if (item?.phone_number) {
-                // vCardLines.push(`TEL;TYPE=Number:${item?.phone_number}`);
                 vCardLines.push(`TEL;TYPE=Téléphone:${item?.phone_number}`);
+                if (item?.phone_number2) {
+                    vCardLines.push(`TEL;TYPE=Number:${item?.phone_number2}`);
+                }
             }
 
             // Adresse
@@ -169,6 +174,7 @@ const Detail = () => {
                     {item?.phone_number && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/phone.jpg" width={40} />
                         <a href={`tel:${item?.phone_number}`} style={{fontSize: "1.1rem"}}>{item?.phone_number}</a>
+                        {item?.phone_number2 && <a href={`tel:${item?.phone_number2}`} style={{fontSize: "1.1rem"}}> - &nbsp;{item?.phone_number2}</a>}
                     </div>}
                     {item?.email && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/gmail.png" width={40} />
@@ -205,6 +211,10 @@ const Detail = () => {
                     {item?.youtube_link && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/youtube.jpg" width={40} />
                         <Link target={"_blank"} to={item?.youtube_link} style={{fontSize: "1.1rem"}}>{item?.youtube_title ? item?.youtube_title : "Youtube"}</Link>
+                    </div>}
+                    {item?.telegram_link && <div className='flex items-center gap-3 mb-5'>
+                        <img src="/social/telegram.jpg" width={40} />
+                        <Link target={"_blank"} to={item?.telegram_link} style={{fontSize: "1.1rem"}}>{item?.telegram_title ? item?.telegram_title : "Telegram"}</Link>
                     </div>}
                 </div>
             </div>

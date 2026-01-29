@@ -23,6 +23,7 @@ const Form = () => {
     const [company, setCompany] = useState("");
     const [bio, setBio] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneNumber2, setPhoneNumber2] = useState("");
     const [email, setEmail] = useState("");
     const [address, setAddress] = useState("");
     const [websiteTitle, setWebsiteTitle] = useState("");
@@ -41,6 +42,8 @@ const Form = () => {
     const [tiktokLink, setTiktokLink] = useState("");
     const [youtubeTitle, setYoutubeTitle] = useState("");
     const [youtubeLink, setYoutubeLink] = useState("");
+    const [telegramTitle, setTelegramTitle] = useState("");
+    const [telegramLink, setTelegramLink] = useState("");
 
     const [loading, setLoading] = useState(false);
 
@@ -59,6 +62,7 @@ const Form = () => {
         formData.append('company', company);
         formData.append('bio', bio);
         formData.append('phone_number', phoneNumber);
+        formData.append('phone_number2', phoneNumber2);
         formData.append('email', email);
         formData.append('address', address);
         formData.append('website_title', websiteTitle);
@@ -77,6 +81,8 @@ const Form = () => {
         formData.append('tiktok_link', tiktokLink);
         formData.append('youtube_title', youtubeTitle);
         formData.append('youtube_link', youtubeLink);
+        formData.append('telegram_title', telegramTitle);
+        formData.append('telegram_link', telegramLink);
         formData.append('created_by', user.id);
         
         if(profile){
@@ -192,19 +198,19 @@ const Form = () => {
                     <input type="text" name="name" id="name"
                         className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                         onChange={(e)=>setName(e.target.value)} 
-                        placeholder='Nom' 
+                        placeholder='Nom*' 
                         required
                     />
                     <input type="text" name="profession" id="profession"
                         className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                         onChange={(e)=>setProfession(e.target.value)}
-                        placeholder='Titre du travail'  
+                        placeholder='Titre du travail*'  
                         required
                     />
                     <input type="text" name="company" id="company"
                         className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                         onChange={(e)=>setCompany(e.target.value)}
-                        placeholder='company' 
+                        placeholder='Company*' 
                     />
                 </div>
                 <textarea name="bio" id="bio" rows={5}
@@ -215,11 +221,17 @@ const Form = () => {
                 </textarea>
 
                 <p className='text-lg mt-5 p-2'><b>Contacts</b></p>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
                     <input type="text" name="phoneNumber" id="phoneNumber"
                         className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                         onChange={(e)=>setPhoneNumber(e.target.value)}
-                        placeholder='Numéro de téléphone' 
+                        placeholder='Numéro de téléphone*' 
+                        required
+                    />
+                    <input type="text" name="phoneNumber2" id="phoneNumber2"
+                        className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
+                        onChange={(e)=>setPhoneNumber2(e.target.value)}
+                        placeholder='Numéro de téléphone 2' 
                         required
                     />
                     <input type="email" name="email" id="email"
@@ -337,6 +349,19 @@ const Form = () => {
                         <input type="text" name="youtubeLink" id="youtubeLink"
                             className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
                             onChange={(e)=>setYoutubeLink(e.target.value)}
+                            placeholder='Lien' 
+                        />
+                    </div>
+                    <div className="telegram">
+                        <p className='text-lg mt-5 p-2'><b>Telegram</b></p>                
+                        <input type="text" name="telegramTitle" id="telegramTitle"
+                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                            onChange={(e)=>setTelegramTitle(e.target.value)}
+                            placeholder='Titre' 
+                        />
+                        <input type="text" name="telegramLink" id="telegramLink"
+                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                            onChange={(e)=>setTelegramLink(e.target.value)}
                             placeholder='Lien' 
                         />
                     </div>
