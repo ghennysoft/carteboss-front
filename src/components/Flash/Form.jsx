@@ -142,7 +142,7 @@ const Form = () => {
                 qrCodeData.append('qr_code', qrCodeFile)
                 qrCodeData.append('qr_data', `https://card.lacarteboss.com/card/${card_id}`)
 
-                await api.put("/api/cards/"+card_id+"/", qrCodeData)
+                await api.put("/api/cards/edit/"+card_id+"/", qrCodeData)
             }
 
             setLoading(false)
