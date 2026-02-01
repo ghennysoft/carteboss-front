@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, Search } from 'lucide-react'
 import { useEffect, useState } from 'react';
 import { BASE_API_URL } from '../../utils/constante';
 import NavBar from '../NavBar';
@@ -7,8 +7,11 @@ import CardItem from './CardItem';
 import api from '../../utils/axiosConfig';
 
 const Flash = () => {
-  const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const navigate = useNavigate();
+
   useEffect(()=>{
     const getPosts = async ()=>{
         try {
@@ -21,7 +24,12 @@ const Flash = () => {
     }
     getPosts();
   }, [])
-  console.log(data)
+
+  const filteredData = data.filter(item =>
+      item.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  console.log({data})
+  console.log({filteredData})
 
   if(!data){
     return;
@@ -47,9 +55,19 @@ const Flash = () => {
             </button>
         </div>
 
+        <div className="relative flex-1 p-2">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <input
+                placeholder="Tapez le nom de la personne pour rechercher..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-background w-full p-2"
+            />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2">
             {
-                data?.map((item) => (
+                filteredData?.map((item) => (
                     <CardItem key={item?.id} item={item} />
                 ))
             }
