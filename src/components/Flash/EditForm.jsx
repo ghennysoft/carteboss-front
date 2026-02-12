@@ -31,6 +31,7 @@ const EditForm = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [phoneNumber2, setPhoneNumber2] = useState("");
     const [email, setEmail] = useState("");
+    const [email2, setEmail2] = useState("");
     const [address, setAddress] = useState("");
     const [websiteTitle, setWebsiteTitle] = useState("");
     const [websiteLink, setWebsiteLink] = useState("");
@@ -71,6 +72,7 @@ const EditForm = () => {
             setPhoneNumber(data.phone_number || '');
             setPhoneNumber2(data.phone_number2 || '');
             setEmail(data.email || '');
+            setEmail2(data.email2 || '');
             setAddress(data.address || '');
             setWebsiteTitle(data.website_title || '');
             setWebsiteLink(data.website_link || '');
@@ -113,6 +115,7 @@ const EditForm = () => {
         formData.append('phone_number', phoneNumber);
         formData.append('phone_number2', phoneNumber2);
         formData.append('email', email);
+        formData.append('email2', email2);
         formData.append('address', address);
         formData.append('website_title', websiteTitle);
         formData.append('website_link', websiteLink);
@@ -269,11 +272,19 @@ const EditForm = () => {
                                 value={phoneNumber2}
                                 placeholder='Numéro de téléphone2' 
                             />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                             <input type="email" name="email" id="email"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setEmail(e.target.value)}
                                 value={email}
                                 placeholder='Adresse email' 
+                            />
+                            <input type="email" name="email2" id="email2"
+                                className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
+                                onChange={(e)=>setEmail2(e.target.value)}
+                                value={email2}
+                                placeholder='Adresse email 2' 
                             />
                             <input type="text" name="address" id="address"
                                 className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'

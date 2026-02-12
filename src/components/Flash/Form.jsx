@@ -25,6 +25,7 @@ const Form = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [phoneNumber2, setPhoneNumber2] = useState("");
     const [email, setEmail] = useState("");
+    const [email2, setEmail2] = useState("");
     const [address, setAddress] = useState("");
     const [websiteTitle, setWebsiteTitle] = useState("");
     const [websiteLink, setWebsiteLink] = useState("");
@@ -64,6 +65,7 @@ const Form = () => {
         formData.append('phone_number', phoneNumber);
         formData.append('phone_number2', phoneNumber2);
         formData.append('email', email);
+        formData.append('email2', email2);
         formData.append('address', address);
         formData.append('website_title', websiteTitle);
         formData.append('website_link', websiteLink);
@@ -234,10 +236,17 @@ const Form = () => {
                         placeholder='Numéro de téléphone 2' 
                         required
                     />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                     <input type="email" name="email" id="email"
                         className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                         onChange={(e)=>setEmail(e.target.value)}
-                        placeholder='Adresse email' 
+                        placeholder='Adresse email 1' 
+                    />
+                    <input type="email" name="email2" id="email2"
+                        className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
+                        onChange={(e)=>setEmail2(e.target.value)}
+                        placeholder='Adresse email 2' 
                     />
                     <input type="text" name="address" id="address"
                         className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'

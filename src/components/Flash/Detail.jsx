@@ -179,6 +179,7 @@ const Detail = () => {
                     {item?.email && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/gmail.png" width={40} />
                         <a href={`mailto:${item?.email}`} style={{fontSize: "1.1rem"}}>{item?.email}</a>
+                        {item?.email2 && <a href={`mailto:${item?.email2}`} style={{fontSize: "1.1rem"}}> - &nbsp;{item?.email2}</a>}
                     </div>}
                     {item?.address && <div className='flex items-center gap-3 mb-5'>
                         <img src="/social/placeholder.png" width={40} />
