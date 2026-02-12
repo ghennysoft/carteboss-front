@@ -22,7 +22,9 @@ const EditForm = () => {
     const [profile, setProfile] = useState(null);
     const [cover, setCover] = useState(null);
     const [logo, setLogo] = useState(null);
-    const [name, setName] = useState("");
+    const [deactivated, setDeactivated] = useState(false); 
+    console.log({deactivated});
+    const [name, setName] = useState(""); 
     const [profession, setProfession] = useState("");
     const [company, setCompany] = useState("");
     const [bio, setBio] = useState("");
@@ -61,6 +63,7 @@ const EditForm = () => {
     // Mettre à jour les états quand les données sont chargées
     useEffect(() => {
         if (data && Object.keys(data).length > 0) {
+            setDeactivated(data.deactivated || false);
             setName(data.full_name || '');
             setProfession(data.profession || '');
             setCompany(data.company || '');
@@ -102,6 +105,7 @@ const EditForm = () => {
 
         const formData = new FormData();
         formData.append('card_id', data?.card_id);
+        formData.append('deactivated', deactivated);
         formData.append('full_name', name);
         formData.append('profession', profession);
         formData.append('company', company);
@@ -209,6 +213,15 @@ const EditForm = () => {
                             <div className='hidden'>
                                 <input type="file" name="logo" id='logo' ref={logoRef} accept="image/*" onChange={(e)=>setLogo(e.target.files[0])} />
                             </div>
+                        </div>
+                        <div className="relative flex items-center justify-end gap-2"  style={{ marginTop: '-20px'}}>
+                            <input type="checkbox" name="deactivated" id="deactivated"
+                                className='block bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
+                                onChange={(e)=>setDeactivated(e.target.checked)} 
+                                value={deactivated} 
+                                required
+                            />
+                            Desactivé
                         </div>
 
                         <p className='text-lg mt-5 p-2'><b>Identité</b></p>

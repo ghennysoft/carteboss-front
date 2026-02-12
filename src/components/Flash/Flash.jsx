@@ -26,10 +26,8 @@ const Flash = () => {
   }, [])
 
   const filteredData = data.filter(item =>
-      item.full_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  console.log({data})
-  console.log({filteredData})
+    item.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if(!data){
     return;
