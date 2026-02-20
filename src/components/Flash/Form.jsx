@@ -22,29 +22,57 @@ const Form = () => {
     const [profession, setProfession] = useState("");
     const [company, setCompany] = useState("");
     const [bio, setBio] = useState("");
+
     const [phoneNumber, setPhoneNumber] = useState("");
     const [phoneNumber2, setPhoneNumber2] = useState("");
     const [email, setEmail] = useState("");
     const [email2, setEmail2] = useState("");
     const [address, setAddress] = useState("");
+
     const [websiteTitle, setWebsiteTitle] = useState("");
     const [websiteLink, setWebsiteLink] = useState("");
+    const [websiteTitle2, setWebsiteTitle2] = useState("");
+    const [websiteLink2, setWebsiteLink2] = useState("");
+
     const [facebookTitle, setFacebookTitle] = useState("");
     const [facebookLink, setFacebookLink] = useState("");
+    const [facebookTitle2, setFacebookTitle2] = useState("");
+    const [facebookLink2, setFacebookLink2] = useState("");
+
     const [whatsappTitle, setWhatsappTitle] = useState("");
     const [whatsappLink, setWhatsappLink] = useState("");
+    const [whatsappTitle2, setWhatsappTitle2] = useState("");
+    const [whatsappLink2, setWhatsappLink2] = useState("");
+
     const [instagramTitle, setInstagramTitle] = useState("");
     const [instagramLink, setInstagramLink] = useState("");
+    const [instagramTitle2, setInstagramTitle2] = useState("");
+    const [instagramLink2, setInstagramLink2] = useState("");
+
     const [linkedInTitle, setLinkedInTitle] = useState("");
     const [linkedInLink, setLinkedInLink] = useState("");
+    const [linkedInTitle2, setLinkedInTitle2] = useState("");
+    const [linkedInLink2, setLinkedInLink2] = useState("");
+
     const [xTitle, setXTitle] = useState("");
     const [xLink, setXLink] = useState("");
+    const [xTitle2, setXTitle2] = useState("");
+    const [xLink2, setXLink2] = useState("");
+
     const [tiktokTitle, setTiktokTitle] = useState("");
     const [tiktokLink, setTiktokLink] = useState("");
+    const [tiktokTitle2, setTiktokTitle2] = useState("");
+    const [tiktokLink2, setTiktokLink2] = useState("");
+
     const [youtubeTitle, setYoutubeTitle] = useState("");
     const [youtubeLink, setYoutubeLink] = useState("");
+    const [youtubeTitle2, setYoutubeTitle2] = useState("");
+    const [youtubeLink2, setYoutubeLink2] = useState("");
+
     const [telegramTitle, setTelegramTitle] = useState("");
     const [telegramLink, setTelegramLink] = useState("");
+    const [telegramTitle2, setTelegramTitle2] = useState("");
+    const [telegramLink2, setTelegramLink2] = useState("");
 
     const [loading, setLoading] = useState(false);
 
@@ -62,29 +90,58 @@ const Form = () => {
         formData.append('profession', profession);
         formData.append('company', company);
         formData.append('bio', bio);
+        
         formData.append('phone_number', phoneNumber);
         formData.append('phone_number2', phoneNumber2);
         formData.append('email', email);
         formData.append('email2', email2);
         formData.append('address', address);
+
         formData.append('website_title', websiteTitle);
         formData.append('website_link', websiteLink);
+        formData.append('website_title2', websiteTitle2);
+        formData.append('website_link2', websiteLink2);
+
         formData.append('facebook_title', facebookTitle);
         formData.append('facebook_link', facebookLink);
+        formData.append('facebook_title2', facebookTitle2);
+        formData.append('facebook_link2', facebookLink2);
+
         formData.append('whatsapp_title', whatsappTitle);
         formData.append('whatsapp_link', whatsappLink);
+        formData.append('whatsapp_title2', whatsappTitle2);
+        formData.append('whatsapp_link2', whatsappLink2);
+
         formData.append('instagram_title', instagramTitle);
         formData.append('instagram_link', instagramLink);
+        formData.append('instagram_title2', instagramTitle2);
+        formData.append('instagram_link2', instagramLink2);
+
         formData.append('linkedin_title', linkedInTitle);
         formData.append('linkedin_link', linkedInLink);
+        formData.append('linkedin_title2', linkedInTitle2);
+        formData.append('linkedin_link2', linkedInLink2);
+
         formData.append('x_title', xTitle);
         formData.append('x_link', xLink);
+        formData.append('x_title2', xTitle2);
+        formData.append('x_link2', xLink2);
+
         formData.append('tiktok_title', tiktokTitle);
         formData.append('tiktok_link', tiktokLink);
+        formData.append('tiktok_title2', tiktokTitle2);
+        formData.append('tiktok_link2', tiktokLink2);
+
         formData.append('youtube_title', youtubeTitle);
         formData.append('youtube_link', youtubeLink);
+        formData.append('youtube_title2', youtubeTitle2);
+        formData.append('youtube_link2', youtubeLink2);
+
         formData.append('telegram_title', telegramTitle);
         formData.append('telegram_link', telegramLink);
+        formData.append('telegram_title2', telegramTitle2);
+        formData.append('telegram_link2', telegramLink2);
+
         formData.append('created_by', user.id);
         
         if(profile){
@@ -165,7 +222,6 @@ const Form = () => {
                 />
                 <h2 className='font-medium text-xl'>Nouvelle carte</h2>
             </div>
-            {/* <form method='post'  > */}
                 {/* Images */}
                 <div className="relative">
                     <img src={cover?URL.createObjectURL(cover):"/no-banner.png"} className='border' style={{objectFit: 'cover', width: '100%', height: '200px'}} alt="" />
@@ -258,121 +314,265 @@ const Form = () => {
                 {/* Liens */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
                     <div className="website">
-                        <p className='text-lg mt-5 p-2'><b>Site web</b></p>                
-                        <input type="text" name="websiteTitle" id="websiteTitle"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setWebsiteTitle(e.target.value)}
-                            placeholder='Titre' 
-                        />
-                        <input type="text" name="websiteLink" id="websiteLink"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setWebsiteLink(e.target.value)}
-                            placeholder='Lien' 
-                        />
+                        <p className='text-lg mt-5 p-2'><b>Site web</b></p> 
+                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
+                            <div className=''>
+                                <input type="text" name="websiteTitle" id="websiteTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setWebsiteTitle(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="websiteLink" id="websiteLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setWebsiteLink(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div> 
+                            <div className=''>
+                                <input type="text" name="websiteTitle" id="websiteTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setWebsiteTitle2(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="websiteLink" id="websiteLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setWebsiteLink2(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div> 
+                        </div> 
                     </div>
                     <div className="facebook">
-                        <p className='text-lg mt-5 p-2'><b>Facebook</b></p>                
-                        <input type="text" name="facebookTitle" id="facebookTitle"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setFacebookTitle(e.target.value)}
-                            placeholder='Titre' 
-                        />
-                        <input type="text" name="facebookLink" id="facebookLink"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setFacebookLink(e.target.value)}
-                            placeholder='Lien' 
-                        />
+                        <p className='text-lg mt-5 p-2'><b>Facebook</b></p>
+                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
+                            <div className=''>
+                                <input type="text" name="facebookTitle" id="facebookTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setFacebookTitle(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="facebookLink" id="facebookLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setFacebookLink(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                            <div className=''>
+                                <input type="text" name="facebookTitle" id="facebookTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setFacebookTitle2(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="facebookLink" id="facebookLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setFacebookLink2(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="whatsapp">
                         <p className='text-lg mt-5 p-2'><b>Whatsapp</b></p>                
-                        <input type="text" name="whatsappTitle" id="whatsappTitle"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setWhatsappTitle(e.target.value)}
-                            placeholder='Titre' 
-                        />
-                        <input type="text" name="whatsappLink" id="whatsappLink"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setWhatsappLink(e.target.value)}
-                            placeholder='Lien' 
-                        />
+                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
+                            <div className=''>
+                                <input type="text" name="whatsappTitle" id="whatsappTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setWhatsappTitle(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="whatsappLink" id="whatsappLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setWhatsappLink(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                            <div className=''>
+                                <input type="text" name="whatsappTitle" id="whatsappTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setWhatsappTitle2(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="whatsappLink" id="whatsappLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setWhatsappLink2(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="instagram">
                         <p className='text-lg mt-5 p-2'><b>Instagram</b></p>                
-                        <input type="text" name="instagramTitle" id="instagramTitle"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setInstagramTitle(e.target.value)}
-                            placeholder='Titre' 
-                        />
-                        <input type="text" name="instagramLink" id="instagramLink"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setInstagramLink(e.target.value)}
-                            placeholder='Lien' 
-                        />
+                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
+                            <div className=''>
+                                <input type="text" name="instagramTitle" id="instagramTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setInstagramTitle(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="instagramLink" id="instagramLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setInstagramLink(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                            <div className=''>
+                                <input type="text" name="instagramTitle" id="instagramTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setInstagramTitle2(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="instagramLink" id="instagramLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setInstagramLink2(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="linkedin">
                         <p className='text-lg mt-5 p-2'><b>Linkedin</b></p>                
-                        <input type="text" name="linkedinTitle" id="linkedinTitle"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setLinkedInTitle(e.target.value)}
-                            placeholder='Titre' 
-                        />
-                        <input type="text" name="linkedinLink" id="linkedinLink"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setLinkedInLink(e.target.value)}
-                            placeholder='Lien' 
-                        />
+                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
+                            <div className=''>
+                                <input type="text" name="linkedinTitle" id="linkedinTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setLinkedInTitle(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="linkedinLink" id="linkedinLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setLinkedInLink(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                            <div className=''>
+                                <input type="text" name="linkedinTitle" id="linkedinTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setLinkedInTitle2(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="linkedinLink" id="linkedinLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setLinkedInLink2(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="x">
                         <p className='text-lg mt-5 p-2'><b>X</b></p>                
-                        <input type="text" name="xTitle" id="xTitle"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setXTitle(e.target.value)}
-                            placeholder='Titre' 
-                        />
-                        <input type="text" name="xLink" id="xLink"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setXLink(e.target.value)}
-                            placeholder='Lien' 
-                        />
+                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
+                            <div className=''>
+                                <input type="text" name="xTitle" id="xTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setXTitle(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="xLink" id="xLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setXLink(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                            <div className=''>
+                                <input type="text" name="xTitle" id="xTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setXTitle2(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="xLink" id="xLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setXLink2(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="tiktok">
-                        <p className='text-lg mt-5 p-2'><b>Tiktok</b></p>                
-                        <input type="text" name="tiktokTitle" id="tiktokTitle"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setTiktokTitle(e.target.value)}
-                            placeholder='Titre' 
-                        />
-                        <input type="text" name="tiktokLink" id="tiktokLink"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setTiktokLink(e.target.value)}
-                            placeholder='Lien' 
-                        />
+                        <p className='text-lg mt-5 p-2'><b>Tiktok</b></p>  
+                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>              
+                            <div className=''>              
+                                <input type="text" name="tiktokTitle" id="tiktokTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setTiktokTitle(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="tiktokLink" id="tiktokLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setTiktokLink(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                            <div className=''>              
+                                <input type="text" name="tiktokTitle" id="tiktokTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setTiktokTitle2(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="tiktokLink" id="tiktokLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setTiktokLink2(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="youtube">
                         <p className='text-lg mt-5 p-2'><b>Youtube</b></p>                
-                        <input type="text" name="youtubeTitle" id="youtubeTitle"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setYoutubeTitle(e.target.value)}
-                            placeholder='Titre' 
-                        />
-                        <input type="text" name="youtubeLink" id="youtubeLink"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setYoutubeLink(e.target.value)}
-                            placeholder='Lien' 
-                        />
+                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
+                            <div className=''>
+                                <input type="text" name="youtubeTitle" id="youtubeTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setYoutubeTitle(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="youtubeLink" id="youtubeLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setYoutubeLink(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                            <div className=''>
+                                <input type="text" name="youtubeTitle" id="youtubeTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setYoutubeTitle2(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="youtubeLink" id="youtubeLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setYoutubeLink2(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="telegram">
-                        <p className='text-lg mt-5 p-2'><b>Telegram</b></p>                
-                        <input type="text" name="telegramTitle" id="telegramTitle"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setTelegramTitle(e.target.value)}
-                            placeholder='Titre' 
-                        />
-                        <input type="text" name="telegramLink" id="telegramLink"
-                            className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
-                            onChange={(e)=>setTelegramLink(e.target.value)}
-                            placeholder='Lien' 
-                        />
+                        <p className='text-lg mt-5 p-2'><b>Telegram</b></p> 
+                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>               
+                            <div className=''>               
+                                <input type="text" name="telegramTitle" id="telegramTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setTelegramTitle(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="telegramLink" id="telegramLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setTelegramLink(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                            <div className=''>               
+                                <input type="text" name="telegramTitle" id="telegramTitle"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setTelegramTitle2(e.target.value)}
+                                    placeholder='Titre' 
+                                />
+                                <input type="text" name="telegramLink" id="telegramLink"
+                                    className='block mb-5 bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0 w-full'
+                                    onChange={(e)=>setTelegramLink2(e.target.value)}
+                                    placeholder='Lien' 
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {
@@ -391,7 +591,6 @@ const Form = () => {
                         Chargement...
                     </button>
                 }
-            {/* </form> */}
         </div>
     )
 }
