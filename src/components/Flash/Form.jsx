@@ -1,11 +1,9 @@
 import { useRef, useState } from 'react'
 import { BsCamera } from 'react-icons/bs'
-import { BASE_API_URL } from '../../utils/constante';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import NavBar from '../NavBar';
 import { ChevronLeft } from 'lucide-react';
-// import { compressImage } from '../../utils/compress';
 import api from '../../utils/axiosConfig';
 import { generate_string_aléatoire } from '../../utils/generate_string';
 
