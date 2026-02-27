@@ -10,7 +10,6 @@ import api from '../../utils/axiosConfig';
 const EditForm = () => {
     const {id} = useParams();
     const [data, setData] = useState({});
-    console.log(data);
     
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -25,6 +24,7 @@ const EditForm = () => {
     const [cover, setCover] = useState(null);
     const [logo, setLogo] = useState(null);
     const [deactivated, setDeactivated] = useState(false); 
+    console.log(deactivated)
     const [name, setName] = useState(""); 
     const [profession, setProfession] = useState("");
     const [company, setCompany] = useState("");
@@ -234,7 +234,7 @@ const EditForm = () => {
         }
 
         try {
-            console.log(formData.entries());
+            console.log(`Desactivé : ${formData.deactivated}`);
             const res = await api.put(BASE_API_URL+"/api/cards/edit/"+id+"/", formData)
             console.log(res.data);
             
@@ -307,6 +307,7 @@ const EditForm = () => {
                                 className='block bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setDeactivated(e.target.checked)} 
                                 value={deactivated} 
+                                checked={deactivated}
                                 required
                             />
                             Desactivé

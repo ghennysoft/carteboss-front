@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
  import { BASE_API_URL } from '../../utils/constante';
 import { Buffer } from 'buffer'
 import axios from 'axios';
+import NoDetail from '../NoDetail';
 
 const Detail = () => {
     const {id} = useParams();
     const [item, setItem] = useState();
+    console.log(item);
     useEffect(()=>{
         const getPost = async ()=>{
             const response = await axios.get(BASE_API_URL+"/api/cards/"+id)
@@ -150,6 +152,10 @@ const Detail = () => {
 
     if (!item) {
         return <div className='text-center p-3'>Chargement...</div>;
+    }
+
+    if(item?.deactivated) {
+        return <NoDetail />
     }
 
     return (
