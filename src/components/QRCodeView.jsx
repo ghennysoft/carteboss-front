@@ -49,6 +49,7 @@ const QRCodeView = ({item, open}) => {
       // alert("Veuillez attendre que l'image soit chargée");
     }
   };
+  
   return (
     <div className='flex justify-center items-center fixed w-full h-full top-0 left-0 bg-gray-400 p-5'>
       <div className="flex flex-col justify-center items-center md:max-10 bg-white rounded-lg py-5 px-10">

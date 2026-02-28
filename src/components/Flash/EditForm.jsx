@@ -2,14 +2,16 @@ import { useEffect, useRef, useState } from 'react'
 import { BsCamera } from 'react-icons/bs'
 import { BASE_API_URL } from '../../utils/constante';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import NavBar from '../NavBar';
 import { ChevronLeft, Trash2 } from 'lucide-react';
 import api from '../../utils/axiosConfig';
+import AgentForm from './AgentForm';
 
 const EditForm = () => {
     const {id} = useParams();
     const [data, setData] = useState({});
+    // const [viewAgentForm, setViewAgentForm] = useState(false);
     
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -24,7 +26,6 @@ const EditForm = () => {
     const [cover, setCover] = useState(null);
     const [logo, setLogo] = useState(null);
     const [deactivated, setDeactivated] = useState(false); 
-    console.log(deactivated)
     const [name, setName] = useState(""); 
     const [profession, setProfession] = useState("");
     const [company, setCompany] = useState("");
@@ -303,6 +304,7 @@ const EditForm = () => {
                             </div>
                         </div>
                         <div className="relative flex items-center justify-end gap-2"  style={{ marginTop: '-40px'}}>
+                            {/* <button onClick={()=>setViewAgentForm(true)} className="flex justify-center items-center gap-2 bg-[#26265e44] text-white border rounded-lg py-2 px-4 cursor-pointer"> + Vente</button> */}
                             <input type="checkbox" name="deactivated" id="deactivated"
                                 className='block bg-gray-300 py-2 lg:py-3 px-4 rounded-full focus:outline-0'
                                 onChange={(e)=>setDeactivated(e.target.checked)} 
@@ -698,6 +700,8 @@ const EditForm = () => {
                         }
                 </div>)
             }
+
+            {/* {setViewAgentForm && <AgentForm item={data?.id} open={setViewAgentForm}  />} */}
         </>
     )
 }

@@ -7,6 +7,7 @@ import PrivateRoute from './middleware/PrivateRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import EditForm from './components/Flash/EditForm';
+import AgentForm from './components/Flash/AgentForm';
 
 function App() {
   const user = localStorage.getItem('access');
@@ -31,6 +32,7 @@ function App() {
           <Route path='/dashboard' index element={<Flash />} />
           <Route path='/form' element={<Form />} />
           <Route path='/form/edit/:id' element={<EditForm />} />
+          <Route path='/form/agent/:id' element={<AgentForm />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -154,7 +154,7 @@ const Detail = () => {
         return <div className='text-center p-3'>Chargement...</div>;
     }
 
-    if(item?.deactivated) {
+    if(item?.deactivated || item?.sales?.length === 0) {
         return <NoDetail />
     }
 
