@@ -19,7 +19,6 @@ function App() {
           <>
             <Route path='*' element={<Navigate to='/' />} />
             <Route path='/' element={<Login />} />
-            {/* <Route path='/auth/register' element={<Register />} />        */}
             <Route path='/card/:id' element={<Detail />} />
           </>
         }

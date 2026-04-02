@@ -18,118 +18,109 @@ const Detail = () => {
         getPost();
     }, [id])
 
-    const generateVCard = async () => {
-        try {
-            let photoBase64 = null;
-            // Convertir l'image en base64
-            if (item?.profile_picture) {
-                try {
-                    // Utiliser axios pour récupérer l'image
-                    const response = await axios.get(item.profile_picture, {
-                        responseType: 'arraybuffer' 
-                    });
-                    
-                    // Convertir en base64
-                    const buffer = Buffer.from(response.data, 'binary');
-                    photoBase64 = buffer.toString('base64');
-                } catch (error) {
-                    console.warn('Impossible de charger la photo:', error);
-                }
-            }
+    const escapeVCardText = (value = "") =>
+  String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\n/g, "\\n");
 
-            // Construire le vCard ligne par ligne comme votre exemple
-            const vCardLines = [
-                'BEGIN:VCARD',
-                'VERSION:3.0',
-                `REV:${new Date().toISOString()}`,
-            ];
+const formatVCardTimestamp = (date = new Date()) =>
+  date
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}Z$/, "Z");
 
-            // Nom - IMPORTANT: format "Nom;Prénom;;;" pour iOS
-            const nameParts = item?.full_name?.split(' ');
-            const last_name = nameParts[nameParts?.length - 1] || '';
-            const first_name = nameParts?.slice(0, -1).join(' ') || item?.full_name;
-            
-            vCardLines.push(`N;CHARSET=utf-8:${last_name};${first_name};;;`);
-            vCardLines.push(`FN;CHARSET=utf-8:${item?.full_name}`);
+const generateVCard = async () => {
+  try {
+    let photoBase64 = null;
 
-            // Titre et organisation
-            if (item?.profession) {
-                vCardLines.push(`TITLE;CHARSET=utf-8:${item?.profession}`);
-            }
-            if (item?.company) {
-                vCardLines.push(`ORG;CHARSET=utf-8:${item?.company}`);
-            }
+    // 📌 Charger l'image correctement (sans la tronquer)
+    if (item?.profilePicture?.url) {
+      try {
+        const response = await axios.get(item.profilePicture.url, {
+          responseType: "arraybuffer",
+        });
 
-            // Note/Bio (échapper les retours à la ligne)
-            if (item?.bio) {
-                const formattedBio = item?.bio.replace(/\n/g, '\\n');
-                vCardLines.push(`NOTE;CHARSET=utf-8:${formattedBio}`);
-            }
+        const buffer = Buffer.from(response.data, "binary");
+        photoBase64 = buffer.toString("base64");
+      } catch (error) {
+        console.warn("Photo ignorée (non critique):", error);
+      }
+    }
 
-            // URLs - format spécifique comme votre exemple
-            if (item?.linkedin_link) {
-                vCardLines.push(`URL;TYPE=${item?.full_name}:${item?.linkedin_link}`);
-            }
-            if (item?.website_link) {
-                vCardLines.push(`URL;TYPE=Website:${item?.website_link}`);
-            }
-            if (item?.facebook_link) {
-                vCardLines.push(`URL;TYPE=${item?.facebook_title}:${item?.facebook_link}`);
-            }
-            if (item?.instagram_link) {
-                vCardLines.push(`URL;TYPE=${item?.instagram_title}:${item?.instagram_link}`);
-            }
-            if (item?.x_link) {
-                vCardLines.push(`URL;TYPE=${item?.x_title}:${item?.x_link}`);
-            }
-            if (item?.whatsapp_link) {
-                vCardLines.push(`URL;TYPE=${item?.whatsapp_title}:${item?.whatsapp_link}`);
-            }
-            if (item?.tiktok_link) {
-                vCardLines.push(`URL;TYPE=${item?.tiktok_title}:${item?.tiktok_link}`);
-            }
-            if (item?.youtube_link) {
-                vCardLines.push(`URL;TYPE=${item?.youtube_title}:${item?.youtube_link}`);
-            }
-            if (item?.telegram_link) {
-                vCardLines.push(`URL;TYPE=${item?.telegram_title}:${item?.telegram_link}`);
-            }
+    // 📌 Gestion du nom (format obligatoire)
+    const fullName = item?.name || "";
+    const nameParts = fullName.trim().split(/\s+/);
+    const lastName =
+      nameParts.length > 1 ? nameParts[nameParts.length - 1] : fullName;
+    const firstName =
+      nameParts.length > 1 ? nameParts.slice(0, -1).join(" ") : "";
 
-            // Email
-            if (item?.email) {
-                vCardLines.push(`EMAIL;INTERNET;TYPE=Email:${item?.email}`);
-            }
+    const vCardLines = [
+      "BEGIN:VCARD",
+      "VERSION:3.0",
 
-            // Téléphones (formats différents)
-            if (item?.phone_number) {
-                vCardLines.push(`TEL;TYPE=Téléphone:${item?.phone_number}`);
-                if (item?.phone_number2) {
-                    vCardLines.push(`TEL;TYPE=Number:${item?.phone_number2}`);
-                }
-            }
+      // Nom
+      `N:${escapeVCardText(lastName)};${escapeVCardText(firstName)};;;`,
+      `FN:${escapeVCardText(fullName)}`,
 
-            // Adresse
-            if (item?.address) {
-                vCardLines.push(`ADR;TYPE=Address;CHARSET=utf-8:;;${item?.address};;;;`);
-            }
+      // Infos pro
+      item?.profession
+        ? `TITLE:${escapeVCardText(item.profession)}`
+        : null,
+      item?.company ? `ORG:${escapeVCardText(item.company)}` : null,
 
-            // Champ personnalisé pour la date
-            vCardLines.push(`X-ABDATE;TYPE=Date connected via Boss:${new Date().toISOString().split('T')[0]}`);
+      // Bio
+      item?.bio ? `NOTE:${escapeVCardText(item.bio)}` : null,
 
-            // PHOTO en base64 (sans sauts de ligne!)
-            if (photoBase64) {
-                vCardLines.push(`PHOTO;ENCODING=b;TYPE=JPEG:${photoBase64}`);
-            }
+      // Emails
+      item?.email
+        ? `EMAIL;TYPE=INTERNET:${escapeVCardText(item.email)}`
+        : null,
 
-            vCardLines.push('END:VCARD');
+      // Téléphones (standard uniquement)
+      item?.phoneNumber
+        ? `TEL;TYPE=CELL:${escapeVCardText(item.phoneNumber)}`
+        : null,
 
-            // Joindre avec des retours à la ligne Windows (\r\n) pour compatibilité
-            const vCardString = vCardLines.join('\r\n');
-            
-            // Créer et télécharger le fichier
-            const blob = new Blob([vCardString], { 
-                type: 'text/vcard;charset=utf-8'
-            });
+      // Adresse
+      item?.address
+        ? `ADR;TYPE=HOME:;;${escapeVCardText(item.address)};;;;`
+        : null,
+
+      // URLs (FORMAT STANDARD)
+      item?.website?.url
+        ? `URL:${escapeVCardText(item.website.url)}`
+        : null,
+      item?.linkedin?.url
+        ? `URL:${escapeVCardText(item.linkedin.url)}`
+        : null,
+      item?.facebook?.url
+        ? `URL:${escapeVCardText(item.facebook.url)}`
+        : null,
+      item?.instagram?.url
+        ? `URL:${escapeVCardText(item.instagram.url)}`
+        : null,
+
+      // Date de révision (format correct)
+      `REV:${formatVCardTimestamp()}`,
+    ].filter(Boolean);
+
+    // 📌 PHOTO (ajout sécurisé)
+    if (photoBase64) {
+      vCardLines.push(`PHOTO;ENCODING=b;TYPE=JPEG:${photoBase64}`);
+    }
+
+    vCardLines.push("END:VCARD");
+
+    // IMPORTANT: CRLF obligatoire
+    const vCardString = vCardLines.join("\r\n") + "\r\n";
+
+    // 📌 Création fichier
+    const blob = new Blob([vCardString], {
+      type: "text/vcard;charset=utf-8",
+    });
             const url = URL.createObjectURL(blob);
             
             const link = document.createElement('a');
