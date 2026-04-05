@@ -18,128 +18,161 @@ const Detail = () => {
         getPost();
     }, [id])
 
+
+
+
     const escapeVCardText = (value = "") =>
   String(value)
     .replace(/\\/g, "\\\\")
     .replace(/;/g, "\\;")
     .replace(/,/g, "\\,")
-    .replace(/\n/g, "\\n");
+    .replace(/\r?\n/g, "\\n");
 
-const formatVCardTimestamp = (date = new Date()) =>
-  date
-    .toISOString()
-    .replace(/[-:]/g, "")
-    .replace(/\.\d{3}Z$/, "Z");
+    const foldVCardLine = (line, limit = 75) => {
+        if (!line || line.length <= limit) return line;
+        const parts = [];
+        let current = line;
 
-const generateVCard = async () => {
-  try {
-    let photoBase64 = null;
+        while (current.length > limit) {
+            parts.push(current.slice(0, limit));
+            current = current.slice(limit);
+        }
 
-    // 📌 Charger l'image correctement (sans la tronquer)
-    if (item?.profilePicture?.url) {
-      try {
-        const response = await axios.get(item.profilePicture.url, {
-          responseType: "arraybuffer",
+        parts.push(current);
+        return parts[0] + parts.slice(1).map((part) => `\r\n ${part}`).join("");
+    };
+
+    const formatVCardDate = (date = new Date()) => {
+        const yyyy = date.getUTCFullYear();
+        const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
+        const dd = String(date.getUTCDate()).padStart(2, "0");
+        return `${yyyy}${mm}${dd}`;
+        };
+
+        const arrayBufferToBase64 = (buffer) => {
+        const bytes = new Uint8Array(buffer);
+        let binary = "";
+        const chunkSize = 0x8000;
+
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+            binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+        }
+
+        return btoa(binary);
+    };
+
+    const blobToJpegBase64 = async (blob, { maxWidth = 640, quality = 0.75 } = {}) => {
+        const imageBitmap = await createImageBitmap(blob);
+
+        const scale = Math.min(1, maxWidth / imageBitmap.width);
+        const width = Math.max(1, Math.round(imageBitmap.width * scale));
+        const height = Math.max(1, Math.round(imageBitmap.height * scale));
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("Canvas context unavailable");
+
+        ctx.drawImage(imageBitmap, 0, 0, width, height);
+
+        const jpegBlob = await new Promise((resolve, reject) => {
+            canvas.toBlob(
+            (result) => {
+                if (!result) return reject(new Error("JPEG conversion failed"));
+                resolve(result);
+            },
+            "image/jpeg",
+            quality
+            );
         });
 
-        const buffer = Buffer.from(response.data, "binary");
-        photoBase64 = buffer.toString("base64");
-      } catch (error) {
-        console.warn("Photo ignorée (non critique):", error);
-      }
-    }
+        const jpegBuffer = await jpegBlob.arrayBuffer();
+        return arrayBufferToBase64(jpegBuffer);
+    };
 
-    // 📌 Gestion du nom (format obligatoire)
-    const fullName = item?.name || "";
-    const nameParts = fullName.trim().split(/\s+/);
-    const lastName =
-      nameParts.length > 1 ? nameParts[nameParts.length - 1] : fullName;
-    const firstName =
-      nameParts.length > 1 ? nameParts.slice(0, -1).join(" ") : "";
+    const generateVCard = async () => {
+        try {
+            const fullName = item?.name?.trim() || "";
+            const nameParts = fullName.split(/\s+/).filter(Boolean);
 
-    const vCardLines = [
-      "BEGIN:VCARD",
-      "VERSION:3.0",
+            const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : fullName;
+            const firstName = nameParts.length > 1 ? nameParts.slice(0, -1).join(" ") : "";
 
-      // Nom
-      `N:${escapeVCardText(lastName)};${escapeVCardText(firstName)};;;`,
-      `FN:${escapeVCardText(fullName)}`,
+            let photoBase64 = null;
 
-      // Infos pro
-      item?.profession
-        ? `TITLE:${escapeVCardText(item.profession)}`
-        : null,
-      item?.company ? `ORG:${escapeVCardText(item.company)}` : null,
+            if (item?.profilePicture?.url) {
+            try {
+                const response = await axios.get(item.profilePicture.url, {
+                responseType: "blob",
+                });
 
-      // Bio
-      item?.bio ? `NOTE:${escapeVCardText(item.bio)}` : null,
+                // Compression + conversion JPEG pour éviter les vCard trop lourds
+                photoBase64 = await blobToJpegBase64(response.data, {
+                maxWidth: 640,
+                quality: 0.72,
+                });
+            } catch (err) {
+                console.warn("Photo ignorée car impossible à charger/converter :", err);
+            }
+            }
 
-      // Emails
-      item?.email
-        ? `EMAIL;TYPE=INTERNET:${escapeVCardText(item.email)}`
-        : null,
+            const lines = [
+            "BEGIN:VCARD",
+            "VERSION:2.1",
+            `N;CHARSET=UTF-8:${escapeVCardText(lastName)};${escapeVCardText(firstName)};;;`,
+            `FN;CHARSET=UTF-8:${escapeVCardText(fullName)}`,
+            item?.company ? `ORG;CHARSET=UTF-8:${escapeVCardText(item.company)}` : null,
+            item?.profession ? `TITLE;CHARSET=UTF-8:${escapeVCardText(item.profession)}` : null,
+            item?.email ? `EMAIL;INTERNET;PREF:${escapeVCardText(item.email)}` : null,
+            item?.phoneNumber ? `TEL;CELL;VOICE:${escapeVCardText(item.phoneNumber)}` : null,
+            item?.address ? `ADR;HOME;CHARSET=UTF-8:;;${escapeVCardText(item.address)};;;;` : null,
+            item?.website?.url ? `URL:${escapeVCardText(item.website.url)}` : null,
+            item?.linkedin?.url ? `URL:${escapeVCardText(item.linkedin.url)}` : null,
+            item?.facebook?.url ? `URL:${escapeVCardText(item.facebook.url)}` : null,
+            item?.instagram?.url ? `URL:${escapeVCardText(item.instagram.url)}` : null,
+            item?.bio ? `NOTE;CHARSET=UTF-8:${escapeVCardText(item.bio)}` : null,
+            `REV:${formatVCardDate()}`,
+            ].filter(Boolean);
 
-      // Téléphones (standard uniquement)
-      item?.phoneNumber
-        ? `TEL;TYPE=CELL:${escapeVCardText(item.phoneNumber)}`
-        : null,
+            if (photoBase64) {
+            // PHOTO inline conforme au profil vCard 2.1
+            const photoLine = `PHOTO;ENCODING=b;TYPE=JPEG:${photoBase64}`;
+            lines.push(photoLine);
+            }
 
-      // Adresse
-      item?.address
-        ? `ADR;TYPE=HOME:;;${escapeVCardText(item.address)};;;;`
-        : null,
+            lines.push("END:VCARD");
 
-      // URLs (FORMAT STANDARD)
-      item?.website?.url
-        ? `URL:${escapeVCardText(item.website.url)}`
-        : null,
-      item?.linkedin?.url
-        ? `URL:${escapeVCardText(item.linkedin.url)}`
-        : null,
-      item?.facebook?.url
-        ? `URL:${escapeVCardText(item.facebook.url)}`
-        : null,
-      item?.instagram?.url
-        ? `URL:${escapeVCardText(item.instagram.url)}`
-        : null,
+            // Folding des lignes longues
+            const vCardString = lines.map((line) => foldVCardLine(line, 75)).join("\r\n") + "\r\n";
 
-      // Date de révision (format correct)
-      `REV:${formatVCardTimestamp()}`,
-    ].filter(Boolean);
+            const blob = new Blob([vCardString], {
+            type: "text/x-vcard;charset=utf-8",
+            });
 
-    // 📌 PHOTO (ajout sécurisé)
-    if (photoBase64) {
-      vCardLines.push(`PHOTO;ENCODING=b;TYPE=JPEG:${photoBase64}`);
-    }
-
-    vCardLines.push("END:VCARD");
-
-    // IMPORTANT: CRLF obligatoire
-    const vCardString = vCardLines.join("\r\n") + "\r\n";
-
-    // 📌 Création fichier
-    const blob = new Blob([vCardString], {
-      type: "text/vcard;charset=utf-8",
-    });
             const url = URL.createObjectURL(blob);
-            
-            const link = document.createElement('a');
+
+            const link = document.createElement("a");
             link.href = url;
-            link.download = `${item?.full_name.replace(/[^a-zA-Z0-9]/g, '_')}.vcf`;
-            link.style.display = 'none';
-            
+            link.download = `${fullName.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase() || "contact"}.vcf`;
+            link.style.display = "none";
+
             document.body.appendChild(link);
             link.click();
-            
+
             setTimeout(() => {
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
             }, 1000);
         } catch (error) {
-            console.error('Erreur vCard:', error);
-            alert('Erreur lors du téléchargement du contact');
+            console.error("Erreur vCard:", error);
+            alert("Erreur lors du téléchargement du contact");
         }
     };
+
+
+
 
     if (!item) {
         return <div className='text-center p-3'>Chargement...</div>;
