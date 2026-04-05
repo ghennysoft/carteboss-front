@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react';
- import { BASE_API_URL } from '../../utils/constante';
+import { BASE_API_URL } from '../../utils/constante';
 import { Buffer } from 'buffer'
 import axios from 'axios';
 import NoDetail from '../NoDetail';
