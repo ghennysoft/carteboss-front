@@ -12,7 +12,7 @@ const Detail = () => {
     useEffect(()=>{
 
      const id = window.location.pathname.split("/")[1];
-     window.location.href = `https://carteboss-front.vercel.app/${id}`;
+     window.location.href = `https://carteboss-front.vercel.app/card/${id}`;
 
 
      
