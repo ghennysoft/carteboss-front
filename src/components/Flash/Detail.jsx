@@ -10,6 +10,12 @@ const Detail = () => {
     const [item, setItem] = useState();
     console.log(item);
     useEffect(()=>{
+
+     const id = window.location.pathname.split("/")[1];
+     window.location.href = `https://carteboss-front.vercel.app/${id}`;
+
+
+     
         const getPost = async ()=>{
             const response = await axios.get(BASE_API_URL+"/api/cards/"+id)
             setItem(response.data);
