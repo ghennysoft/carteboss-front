@@ -11,7 +11,7 @@ const Detail = () => {
     console.log(item);
     useEffect(()=>{
 
-     window.location.href = `https://carteboss-front.vercel.app/card/${id}`;
+    // window.location.href = `https://carteboss-front.vercel.app/card/${id}`;
 
 
      
