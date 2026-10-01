@@ -1,8 +1,8 @@
 import axios from "axios";
-import { BASE_API_URL } from "./constante";
 
 const api = axios.create({
-  baseURL: BASE_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true,
 });
 
 api.interceptors.request.use(

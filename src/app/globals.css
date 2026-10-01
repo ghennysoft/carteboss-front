@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+
+html, body {
+  color: var(--text-color);
+  margin: 0 !important;
+  max-width: 100%;
+  overflow-x: hidden;
+  padding: 0 !important;
+  touch-action: pan-y, pan-x;
+  transition: all 0.4s cubic-bezier(0.57, 0.25, 0.33, 1) 0s;
+}
