@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"
 import axios from "axios"
@@ -48,7 +47,7 @@ const Login = () => {
 
       setLoading(false)
       setMessage('')
-      navigate.push('/dashboard')
+      navigate.push('/')
     } catch (err) {
       setLoading(false)
       setMessage('Echec de connexion')
