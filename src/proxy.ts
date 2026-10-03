@@ -8,13 +8,13 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isPublicRoute =
-    pathname === "/login" || /^\/card\/[^/]+$/.test(pathname) ||
+    pathname === "/login" || pathname.startsWith("/card/") ||
     pathname.startsWith("/login/");
 
   const accessToken = request.cookies.get("access_token")?.value;
 
   // Route publique + utilisateur connecté
-  if (isPublicRoute && accessToken && !/^\/card\/[^/]+$/.test(pathname)) {
+  if (isPublicRoute && accessToken && !pathname.startsWith("/card/")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
