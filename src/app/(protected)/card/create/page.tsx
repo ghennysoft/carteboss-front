@@ -198,9 +198,7 @@ const CardForm = () => {
                 );
 
                 // Convertir Data URL en File
-                console.log({qrDataURL})
                 const qrCodeFile = dataURLtoFile(qrDataURL, `${card_id}.png`);
-                console.log({qrCodeFile})
                 
                 // Mettre à jour avec le QR code
                 const qrCodeData = new FormData();

@@ -21,7 +21,7 @@ const CardItem = ({item}: any) => {
             </div>
             {
                 item?.sales?.length === 0
-                ? <Link href={`/card/agent/${item?.id}`} className="flex justify-center items-center gap-2 bg-[#f6260a] text-white border rounded-lg py-2 px-4">Activer la carte</Link>
+                ? <Link href={`/card/${item?.id}/activate`} className="flex justify-center items-center gap-2 bg-[#f6260a] text-white border rounded-lg py-2 px-4">Activer la carte</Link>
                 : <div className='grid grid-cols-1 gap-3 my-5 ml-3' style={{fontSize: "1rem"}}>
                     <div className="grid grid-cols-2 gap-3">
                         <Link href={`/card/edit/${item?.card_id}`} className="flex justify-center items-center gap-2 bg-gray-400 text-white border rounded-lg py-2 px-4"><Edit2 size={15} /> Modifier</Link>
