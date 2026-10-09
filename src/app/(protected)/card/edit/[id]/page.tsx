@@ -241,7 +241,7 @@ const EditForm = () => {
 
         try {
             console.log(`Desactivé : ${deactivated}`);
-            const res = await api.put(process.env.NEXT_PUBLIC_API_URL+"/api/cards/edit/"+id+"/", formData)
+            const res = await api.put("/api/cards/edit/"+id+"/", formData)
             console.log(res.data);
             
             setLoading(false)
