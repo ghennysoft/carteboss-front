@@ -241,7 +241,11 @@ const EditForm = () => {
 
         try {
             console.log(`Desactivé : ${deactivated}`);
-            const res = await api.put("/api/cards/edit/"+id+"/", formData)
+            const res = await api.put("/api/cards/edit/"+id+"/", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
             console.log(res.data);
             
             setLoading(false)

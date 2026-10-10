@@ -186,7 +186,7 @@ const CardForm = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
-            })            
+            }) 
             if(response?.data){
                 // Générer le QR code en tant que Data URL
                 const qrDataURL = await QRCode.toDataURL(
