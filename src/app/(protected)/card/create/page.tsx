@@ -182,7 +182,11 @@ const CardForm = () => {
         }
         
         try {
-            const response = await api.post("/api/cards/", formData)            
+            const response = await api.post("/api/cards/", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })            
             if(response?.data){
                 // Générer le QR code en tant que Data URL
                 const qrDataURL = await QRCode.toDataURL(
