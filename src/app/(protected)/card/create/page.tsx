@@ -190,7 +190,7 @@ const CardForm = () => {
             if(response?.data){
                 // Générer le QR code en tant que Data URL
                 const qrDataURL = await QRCode.toDataURL(
-                    `${process.env.NEXT_PUBLIC_API_URL}/card/${card_id}`, // Utilisez votre URL de production
+                    `https://card.lacarteboss.com/card/${card_id}`, // Utilisez votre URL de production
                     {
                         width: 400,
                         margin: 2,
